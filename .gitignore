@@ -1,0 +1,60 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Flask cache and session files
+instance/
+webapp.egg-info/
+vassals/
+.cache/
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+db.sqlite3
+
+# Environment variables
+.env
+
+# Compiled Python files
+*.pyc
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary files
+*~
+.DS_Store
+Thumbs.db
+
+# Virtual environment
+venv/

@@ -30,12 +30,6 @@ webapp.egg-info/
 vassals/
 .cache/
 
-# Logs and databases
-*.log
-*.sql
-*.sqlite
-db.sqlite3
-
 # Environment variables
 .env
 
@@ -55,6 +49,3 @@ db.sqlite3
 *~
 .DS_Store
 Thumbs.db
-
-# Virtual environment
-venv/

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scanneur 3D</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> -->
+</head>
+<body>
+    <img src="static/hublot-logo-upd.png" width="300" alt="Logo de la marque Hublot">
+    <hr>
+    <h1>Interface de commande du scanneur 3D</h1>
+
+    <img id="imageCamera" src="static/test_camera/frame_000.jpg" width="500" alt="Vue de la caméra">
+   
+    <!-- OPTIONS -->
+    <div class="standard-options-container">
+        <div class="option-container">
+            <div class="slider-title">Hauteur de l'objet : <span id="objectHeightText">20cm</span></div>
+            <input type="range" min="0" max="45" value="20" class="slider" id="objectHeightSlider">
+        </div>
+        
+        <div class="option-container">
+            <div class="slider-title">Niveau de détails de l'objet : <span id="objectDetailText">moyen</span></div>
+            <input type="range" min="0" max="2" value="1" class="slider" id="objectDetailSlider">
+        </div>
+        
+        <div class="option-container">
+            <div>Quel nom voulez-vous donner à l'objet ?</div>
+            <input type="text" maxlength="512" id="objectNameField" class="searchField">
+            <label for="objectNameField">Les photos seront enregistrées selon le format <i><span id="objectNameText">capture_000.jpg</span></i></label>
+        </div>
+    </div>
+
+    <!-- MORE OPTIONS -->
+    <button id="showMoreOptionButton">Afficher les options supplémentaires</button>
+    <button id="hideMoreOptionButton" style="display:none">Cacher les options supplémentaires</button>
+    <br>
+
+    <div id="moreOptionContainer" style="display:none">
+        <p>Vitesse max de rotation de l'objet : <span id="maxRotationText">360°/s</span></p>
+        <input type="range" min="1" max="3600" value="360" class="slider" id="maxRotationSlider">
+        <p>Angle d'un pas de l'objet : <span id="stepAngleText">5°</span></p>
+        <input type="range" min="1" max="45" value="5" class="slider" id="stepAngleSlider">
+    
+        <p>Vitesse max de translation de la camera : <span id="maxTranslationText">10cm/s</span></p>
+        <input type="range" min="1" max="20" value="10" class="slider" id="maxTranslationSlider">
+        <p>Hauteur d'un pas de la camera : <span id="stepTranslationText">5cm</span></p>
+        <input type="range" min="1" max="10" value="5" class="slider" id="stepTranslationSlider">
+        
+        <div>
+            Temps d'exposition de la camera : <span id="exposureText">5us</span>
+            <input type="range" min="1" max="10" value="5" class="slider" id="exposureSlider">
+        </div>
+    
+        <input type="checkbox" id="lightToggleButton" checked>
+        <label for="checkbox">Activer les lumières</label>
+
+    </div>
+    <br>
+
+    <!-- GO, STOP -->
+    <button id="goButton">Démarrer la capture</button>
+    <button id="stopButton" style="display:none">Arrêter la capture</button>
+    <br>
+
+    <!-- PROGRESS -->
+    <div id="progressContainer" style="display:none">
+        <p><span id="progressText">Démarrage de la capture ...</span></p>
+        <progress id="progressBar" max="100"></progress>
+        <label for="progressBar"><span id="progressBarIndicator">0 %</span></label>
+    </div>
+
+
+    <script src="{{ url_for('static', filename='socket.io.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> -->
+
+</body>
+</html>

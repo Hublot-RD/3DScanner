@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-  	<title>Contact Form 05</title>
+  	<title>Scanneur 3D</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -17,7 +17,7 @@
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-md-6 text-center mb-5">
-					<h2 class="heading-section">Contact Form #05</h2>
+					<h2 class="heading-section">Interface de commande du scanneur 3D</h2>
 				</div>
 			</div>
 			<div class="row justify-content-center">
@@ -26,35 +26,31 @@
 						<div class="row no-gutters">
 							<div class="col-lg-6">
 								<div class="contact-wrap w-100 p-md-5 p-4">
-									<h3>Contact us</h3>
-									<p class="mb-4">We're open for any suggestion or just to have a chat</p>
-									<div id="form-message-warning" class="mb-4"></div> 
-				      		<div id="form-message-success" class="mb-4">
+									<h3>Paramètres</h3>
+									<p class="mb-4">Choisis les réglages adaptés à l'objet à scanner</p>
+									<!-- <div id="form-message-warning" class="mb-4"></div>  -->
+				      		<!-- <div id="form-message-success" class="mb-4">
 				            Your message was sent, thank you!
-				      		</div>
+				      		</div> -->
 									<div class="row mb-4">
 										<div class="col-md-4">
 											<div class="dbox w-100 d-flex align-items-start">
 						        		<div class="text">
-							            <p><span>Address:</span> 198 West 21th Street, Suite 721 New York NY 10016</p>
+							            <p><span>Hauteur de l'objet</span> ### slider ici</p>
 							          </div>
 						          </div>
 										</div>
 										<div class="col-md-4">
 											<div class="dbox w-100 d-flex align-items-start">
 						        		<div class="text">
-							            <p><span>Email:</span> <a href="mailto:info@yoursite.com">info@yoursite.com</a></p>
-							          </div>
-						          </div>
-										</div>
-										<div class="col-md-4">
-											<div class="dbox w-100 d-flex align-items-start">
-						        		<div class="text">
-							            <p><span>Phone:</span> <a href="tel://1234567920">+ 1235 2355 98</a></p>
+							            <p><span>Niveau de détail</span> ### liste à choisir ici</p>
 							          </div>
 						          </div>
 										</div>
 									</div>
+
+
+
 									<form method="POST" id="contactForm" name="contactForm" class="contactForm">
 										<div class="row">
 											<div class="col-md-12">
@@ -85,19 +81,13 @@
 											</div>
 										</div>
 									</form>
-									<div class="w-100 social-media mt-5">
-										<h3>Follow us here</h3>
-										<p>
-											<a href="#">Facebook</a>
-											<a href="#">Twitter</a>
-											<a href="#">Instagram</a>
-											<a href="#">Dribbble</a>
-										</p>
-									</div>
+
+
+
 								</div>
 							</div>
 							<div class="col-lg-6 d-flex align-items-stretch">
-								<div class="info-wrap w-100 p-5 img" style="background-image: url({{url_for('static', filename='/images/img.jpg')}});">
+								<div class="info-wrap w-100 p-5 img" style="background-image: url({{url_for('static', filename='/test_camera/frame_000.jpg')}});">
 			          </div>
 							</div>
 						</div>

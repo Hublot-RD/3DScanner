@@ -3,6 +3,10 @@ from app import app, socketio
 from threading import Thread, Event
 import time
 
+
+HOMEPAGE_TEMPLATE = 'test0.html'
+
+
 stop_capture_event = Event()
 stop_image_event = Event()
 main_thread_obj = Thread()
@@ -40,7 +44,7 @@ def image_thread(thread_stop_event: Event()):
 @app.route('/')
 def index():
     # Serve the HTML page
-    return render_template('test0.html')
+    return render_template(HOMEPAGE_TEMPLATE)
 
 @socketio.on('start_capture')
 def handle_start_capture(data):

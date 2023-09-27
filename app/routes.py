@@ -4,7 +4,8 @@ from threading import Thread, Event
 import time
 
 
-HOMEPAGE_TEMPLATE = 'test0.html'
+# HOMEPAGE_TEMPLATE = 'test0.html'
+HOMEPAGE_TEMPLATE = 'index.html'
 
 
 stop_capture_event = Event()

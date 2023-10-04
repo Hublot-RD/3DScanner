@@ -1,5 +1,6 @@
-from picamera2 import Picamera2, Preview
+from picamera2 import Picamera2
 from time import sleep
+from constants import CAMERA_RESOLUTION
 
 
 # with Picamera2() as camera:
@@ -16,12 +17,26 @@ from time import sleep
 
 #     print(f'Sensor: {camera.revision}')
 
-picam2 = Picamera2()
-# picam2.start_preview(Preview.NULL)
-picam2.start()
+class Camera():
+    def __init__(self) -> None:
+        self.cam = Picamera2()
+        self.cam.still_configuration.size = CAMERA_RESOLUTION
+        self.cam.configure('still')
+        self.cam.start()
+        sleep(1)
 
-sleep(1)
+    def capture(self, path: str, name: str, img_format: str) -> None:
+        metadata = self.cam.capture_file(path+name+'.'+img_format)
+        return metadata
 
-picam2.capture_file('test.jpg')
 
-exit()
+
+
+
+if __name__ == "__main__":
+    my_cam = Camera()
+    meta = my_cam.capture(path='/home/pi/scanner3d/3DScanner/app/static/cam_imgs/', 
+                          name='test1', img_format='jpg')
+    print(meta)
+    exit()
+    

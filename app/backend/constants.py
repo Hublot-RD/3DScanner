@@ -18,3 +18,8 @@ TURNTABLE_STEP_ANGLE = 42 #[deg]
 CAMERA_EXPOSURE = 42 #[us]
 
 FLASH_ON = True
+
+INITIAL_STATUS = {'state': 'Idle',
+                  'progress_value': 0,
+                  'text_value': '',
+                  }

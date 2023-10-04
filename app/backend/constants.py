@@ -19,4 +19,9 @@ CAMERA_EXPOSURE = 42 #[us]
 
 FLASH_ON = True
 
+INITIAL_STATUS = {'state': 'Idle',
+                  'progress_value': 0,
+                  'text_value': '',
+                  }
+
 CAMERA_RESOLUTION = (4608,2592)

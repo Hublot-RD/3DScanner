@@ -1,12 +1,18 @@
 import RPi.GPIO as GPIO
 import time
+from threading import Thread, Event
 
 
 class LED_Controller():
     def __init__(self, pin: int, state: bool = False, reversed: bool = False):
+        # Public objects
         self.pin = pin
         self.state = state
         self.reversed = reversed
+
+        # Private objects
+        self._flicker_thd = Thread()
+        self._flicker_thd_stop_event = Event()
 
     def set_state(self, on: bool):
         self.state = on
@@ -18,14 +24,23 @@ class LED_Controller():
     def toggle(self):
         self.set_state(not self.state)
 
-    def start_flicker(self, duration: float = 3, period : float = 0.2):
-        start_time = time.perf_counter()
+    def start_flicker(self, period : float = 0.2, duty_cycle: float = 0.5):
+        duty_cycle %= 1 # map duty cycle to a real number in [0.0 , 1.0]
 
-        while(time.perf_counter() < start_time+duration):
-            self.toggle()
-            time.sleep(period/2)
-            self.toggle()
-            time.sleep(period/2)
+        if not self._flicker_thd.is_alive():
+            self._flicker_thd_stop_event.clear()
+            self._flicker_thd = Thread(target=self._flicker, kwargs={'stop_event': self._flicker_thd_stop_event, 'period' : period, 'duty_cycle': duty_cycle})
+            self._flicker_thd.start()
+    
+    def stop_flicker(self):
+        self._flicker_thd_stop_event.set()
+
+    def _flicker(self, stop_event: Event(), period, duty_cycle):
+        while not stop_event.is_set():
+            self.set_state(True)
+            time.sleep(period*duty_cycle)
+            self.set_state(False)
+            time.sleep(period*(1-duty_cycle))
 
 
 def play_startup_sequence(capture_pin: int, error_pin: int, flash_pin: int) -> None:
@@ -43,11 +58,13 @@ def play_startup_sequence(capture_pin: int, error_pin: int, flash_pin: int) -> N
     time.sleep(3)
 
     # Make capture LED flicker
-    LED_capture.start_flicker(duration=3)
+    LED_capture.start_flicker()
+    time.sleep(3)
+    LED_capture.stop_flicker()
 
     # Turn OFF all signals
+    LED_error.set_state(False)
     flash.set_state(False)
     LED_capture.set_state(False)
-    LED_error.set_state(False)
 
     return

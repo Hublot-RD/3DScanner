@@ -1,17 +1,21 @@
 from threading import Thread, Event
+from queue import Queue
 from time import sleep
 from app.backend.constants import INITIAL_STATUS
 
 class Scanner3D_backend():
-    def __init__(self) -> None:
+    def __init__(self, status_queue: Queue) -> None:
         # Create Thread related objects
         self._main_thd_stop = Event()
         self.stop_image_event = Event()
         self._main_thd_obj = Thread()
         self.image_thread_obj = Thread()
 
+        # Queue
+        self._status_queue = status_queue
+
         # Set initial status
-        self.status = INITIAL_STATUS
+        self._status = INITIAL_STATUS
 
 
         # Play LED animation
@@ -31,10 +35,10 @@ class Scanner3D_backend():
 
     def stop(self) -> None:
         self._main_thd_stop.set()
-        self.status = INITIAL_STATUS
+        self._status = INITIAL_STATUS
 
-    def get_status(self) -> str:
-        return self.status
+    # def get_status(self) -> str:
+    #     return self.status
     
     def refresh_image(self) -> None:
         return
@@ -59,10 +63,10 @@ class Scanner3D_backend():
             info['progress_value'] = cnt % 101
             info['text_value'] = texts[cnt%4]
             self._update_status(info)
-            sleep(0.3)
+            sleep(0.2)
 
         # Closing thread properly
-        print('main_thread is closing')
+        print('_main_thd closed')
 
         
 
@@ -85,4 +89,5 @@ class Scanner3D_backend():
         # Wait for user restart (or see how I want to handle end of capture)
 
     def _update_status(self, info: dict) -> None:
-        self.status = {k: info[k] if k in info else v for k, v in self.status.items()}
+        self._status = {k: info[k] if k in info else v for k, v in self._status.items()}
+        self._status_queue.put(self._status)

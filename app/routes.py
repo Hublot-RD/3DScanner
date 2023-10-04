@@ -2,6 +2,7 @@ from flask import render_template
 from app import app, socketio
 from app.backend.scanner3d_backend import Scanner3D_backend
 from threading import Thread, Event
+from queue import Queue
 import time
 
 
@@ -9,7 +10,8 @@ import time
 HOMEPAGE_TEMPLATE = 'test0.html'
 
 # Create backend object and necessary objects
-backend = Scanner3D_backend()
+status_queue = Queue()
+backend = Scanner3D_backend(status_queue=status_queue)
 status_updator_thd_obj = Thread()
 status_updator_thd_stop = Event()
 
@@ -36,9 +38,11 @@ image_thread_obj = Thread()
 
 def status_updator_thd_target(stop_event: Event()) -> None:
     while not stop_event.is_set():
-        status = backend.get_status()
-        socketio.emit('update_progress', status)
-        time.sleep(0.5)
+        if status_queue.not_empty:
+            status = status_queue.get()
+            socketio.emit('update_progress', status)
+
+        time.sleep(0.1)
     
     # Closing thread properly
     print('status_updator_thd stopped')

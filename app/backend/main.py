@@ -1,6 +1,6 @@
 from constants import LEDS_PINOUT, FLASH_PIN
 import RPi.GPIO as GPIO
-from app.backend.led_ctrl import play_startup_sequence
+from led_ctrl import play_startup_sequence
 
 
 GPIO.setmode(GPIO.BOARD)

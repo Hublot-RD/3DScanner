@@ -16,12 +16,16 @@ from time import sleep
 
 #     print(f'Sensor: {camera.revision}')
 
-picam2 = Picamera2()
-# picam2.start_preview(Preview.NULL)
-picam2.start()
+class Camera():
+    def __init__(self) -> None:
+        self.cam = Picamera2()
+        self.cam.start()
 
-sleep(1)
+        sleep(1)
 
-picam2.capture_file('test.jpg')
+        self.cam.capture_file('test.jpg')
+
+
+my_cam = Camera()
 
 exit()

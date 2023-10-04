@@ -16,25 +16,8 @@ status_updator_thd_obj = Thread()
 status_updator_thd_stop = Event()
 
 # Create thread objects for dummy demonstration
-# stop_capture_event = Event()
 stop_image_event = Event()
-# main_thread_obj = Thread()
 image_thread_obj = Thread()
-
-# def main_thread(thread_stop_event: Event()):
-#     texts = ["Processing", "Processing.", "Processing..", "Processing..."]
-#     cnt = 0
-#     info = {'progress_value': 0, 'text_value': texts[cnt]}
-
-#     while not thread_stop_event.is_set():
-#         cnt += 1
-#         info['progress_value'] = cnt % 101
-#         info['text_value'] = texts[cnt%4]
-#         socketio.emit('update_progress', info)
-#         time.sleep(0.3)
-
-#     # Closing thread properly
-#     print('main_thread is closing')
 
 def status_updator_thd_target(stop_event: Event()) -> None:
     while not stop_event.is_set():

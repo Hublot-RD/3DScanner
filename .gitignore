@@ -49,3 +49,6 @@ vassals/
 *~
 .DS_Store
 Thumbs.db
+
+# Temporary folders
+cam_imgs/

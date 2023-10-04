@@ -1,7 +1,14 @@
 from threading import Thread, Event
 from queue import Queue
+import RPi.GPIO as GPIO
 from time import sleep
-from app.backend.constants import INITIAL_STATUS
+from app.backend.constants import LEDS_PINOUT, FLASH_PIN, INITIAL_STATUS, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_FOLDER
+from app.backend.camera_pi import Camera
+from app.backend.led_ctrl import play_startup_sequence
+# from constants import LEDS_PINOUT, FLASH_PIN, INITIAL_STATUS, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_FOLDER
+# from camera_pi import Camera
+# from led_ctrl import play_startup_sequence
+
 
 class Scanner3D_backend():
     def __init__(self, status_queue: Queue) -> None:
@@ -19,8 +26,14 @@ class Scanner3D_backend():
 
 
         # Play LED animation
+        # GPIO.setmode(GPIO.BOARD)
+        # GPIO.setup((FLASH_PIN, *LEDS_PINOUT.values()), GPIO.OUT)
+        # play_startup_sequence(capture_pin=LEDS_PINOUT['CAPTURE'], error_pin=LEDS_PINOUT['ERROR'], flash_pin=FLASH_PIN)
+        sleep(1)
 
         # Start the camera
+        self.cam = Camera()
+
 
         # Home the z axis
 
@@ -40,8 +53,13 @@ class Scanner3D_backend():
     # def get_status(self) -> str:
     #     return self.status
     
-    def refresh_image(self) -> None:
-        return
+    def refresh_image(self) -> str:
+        self.cam.capture_preview()
+        return PREVIEW_IMAGE_PATH
+    
+    def capture_photo(self) -> str:
+        self.cam.capture_highres()
+        return HIGHRES_IMAGE_FOLDER
     
     def _main_thd_target(self, stop_event: Event(), capture_params: dict) -> None:
         self.obj_height = capture_params['height']
@@ -91,3 +109,14 @@ class Scanner3D_backend():
     def _update_status(self, info: dict) -> None:
         self._status = {k: info[k] if k in info else v for k, v in self._status.items()}
         self._status_queue.put(self._status)
+
+if __name__ == '__main__':
+    from time import sleep
+    status_queue = Queue()
+    backend = Scanner3D_backend(status_queue=status_queue)
+    sleep(2)
+    print('Refreshing preview')
+    file_path = backend.refresh_image()
+    # file = backend.capture_photo()
+    print('success image')
+    sleep(0.5)

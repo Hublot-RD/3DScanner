@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     // Image
     var imageCamera = document.getElementById('imageCamera');
+    var refreshImageCameraButton = document.getElementById('refreshImageCameraButton'); 
     // Height
     var heightSlider = document.getElementById('objectHeightSlider');
     var heightText = document.getElementById('objectHeightText');
@@ -33,7 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update functions
     function updateImageCamera(value) {
-        imageCamera.src = "static/test_camera/" + String(value);
+        imageCamera.src = String(value);
+        // imageCamera.src = 'static/cam_imgs/preview.jpg'
     }
     function updateHeightText(value) {
         if (value) {
@@ -82,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Sliders
     heightSlider.oninput = function() {
         updateHeightText(this.value);
     }
@@ -95,17 +98,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Buttons
+    refreshImageCameraButton.addEventListener('click', function() {
+        socket.emit('refresh_preview', 0);
+    });
+
     showMoreOptionButton.addEventListener('click', function() {
         hideMoreOptionButton.style.display = 'inline';
         moreOptionContainer.style.display = 'inline';
         showMoreOptionButton.style.display = 'none';
-    })
+    });
 
     hideMoreOptionButton.addEventListener('click', function() {
         showMoreOptionButton.style.display = 'inline';
         moreOptionContainer.style.display = 'none';
         hideMoreOptionButton.style.display = 'none';
-    })
+    });
 
     lightToggleButton.addEventListener('change', function() {
         socket.emit('light_toggled', lightToggleButton.checked)
@@ -146,6 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.on('update_image', function(data) {
-        updateImageCamera(data.imageName);
+        updateImageCamera(data.imagePath);
     });
 });

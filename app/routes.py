@@ -6,7 +6,6 @@ from queue import Queue
 import time
 
 
-
 HOMEPAGE_TEMPLATE = 'test0.html'
 
 # Create backend object and necessary objects
@@ -49,8 +48,22 @@ def index():
     # Serve the HTML page
     return render_template(HOMEPAGE_TEMPLATE)
 
+@socketio.on('refresh_preview')
+def handle_refresh_preview(data):
+    print('Refreshing preview')
+    file_path = backend.refresh_image()
+    print('success image')
+    file_path = file_path.removeprefix('/home/pi/scanner3d/3DScanner/app/')
+    file_path = 'preview.jpg'
+    print(file_path)
+    time.sleep(0.5)
+    # socketio.emit('update_image', {'imagePath': file_path})
+
+    
+
 @socketio.on('start_capture')
 def handle_start_capture(data):
+    handle_refresh_preview(0)
     backend.start(capture_params=data)
 
     # Activate status update

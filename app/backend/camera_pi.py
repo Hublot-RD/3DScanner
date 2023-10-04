@@ -1,42 +1,60 @@
 from picamera2 import Picamera2
 from time import sleep
-from constants import CAMERA_RESOLUTION
+from app.backend.constants import CAMERA_RESOLUTION_HIGHRES, CAMERA_RESOLUTION_PREVIEW, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_FOLDER
+# from constants import CAMERA_RESOLUTION_HIGHRES, CAMERA_RESOLUTION_PREVIEW, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_FOLDER
 
-
-# with Picamera2() as camera:
-#     # camera.resolution = (64,64)
-#     camera.exposure_mode = 'night' # to have minimal gain so less noise
-#     # camera.flash_mode = 'on' # look here to make it work: https://picamera.readthedocs.io/en/release-1.13/api_camera.html?highlight=exposure_mode#picamera.PiCamera.flash_mode
-    
-#     # give time to camera to set properly exposure, iso etc ...
-#     sleep(2)
-    
-#     for i in range(int(5/5)):
-#         sleep(5)
-#         camera.capture(f'./images/img_test_{i}.jpg', format='jpeg')
-
-#     print(f'Sensor: {camera.revision}')
 
 class Camera():
     def __init__(self) -> None:
-        self.cam = Picamera2()
-        self.cam.still_configuration.size = CAMERA_RESOLUTION
-        self.cam.configure('still')
-        self.cam.start()
-        sleep(1)
+        self._cam = Picamera2()
+        self._preview_mode = True
+        self._highres_img_cnt = 0
 
-    def capture(self, path: str, name: str, img_format: str) -> None:
-        metadata = self.cam.capture_file(path+name+'.'+img_format)
+        self._set_preview_mode(self._preview_mode)
+        if not self._cam.started:
+            self._cam.start()
+
+    def capture_highres(self) -> dict:
+        self._set_preview_mode(False)
+        name = 'img_{0:03}.jpg'.format(self._highres_img_cnt)
+        self._highres_img_cnt += 1
+        metadata = self._cam.capture_file(HIGHRES_IMAGE_FOLDER + name)
         return metadata
-
-
-
+    
+    def capture_preview(self) -> dict:
+        self._set_preview_mode(True)
+        metadata = self._cam.capture_file(PREVIEW_IMAGE_PATH)
+        return metadata
+    
+    def reset(self) -> None:
+        self._highres_img_cnt = 0
+        self._set_preview_mode(True)
+    
+    def _set_preview_mode(self, preview_ON: bool) -> None:
+        if not self._preview_mode and preview_ON:
+            if self._cam.started:
+                self._cam.stop()
+            self._cam.still_configuration.size = CAMERA_RESOLUTION_PREVIEW
+            self._cam.configure('still')
+            self._cam.start()
+            sleep(1)
+        elif self._preview_mode and not preview_ON:
+            if self._cam.started:
+                self._cam.stop()
+            self._cam.still_configuration.size = CAMERA_RESOLUTION_HIGHRES
+            self._cam.configure('still')
+            self._cam.start()
+            sleep(1)
+        self._preview_mode = preview_ON
 
 
 if __name__ == "__main__":
     my_cam = Camera()
-    meta = my_cam.capture(path='/home/pi/scanner3d/3DScanner/app/static/cam_imgs/', 
-                          name='test1', img_format='jpg')
+    my_cam.capture_preview()
+    print('success')
+    my_cam.reset()
+    meta = my_cam.capture_highres()
     print(meta)
+
     exit()
     

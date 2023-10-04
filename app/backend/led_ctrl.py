@@ -24,21 +24,23 @@ class LED_Controller():
     def toggle(self):
         self.set_state(not self.state)
 
-    def start_flicker(self, period : float = 0.2):
+    def start_flicker(self, period : float = 0.2, duty_cycle: float = 0.5):
+        duty_cycle %= 1 # map duty cycle to a real number in [0.0 , 1.0]
+
         if not self._flicker_thd.is_alive():
             self._flicker_thd_stop_event.clear()
-            self._flicker_thd = Thread(target=self._flicker, kwargs={'stop_event': self._flicker_thd_stop_event, 'period' : period})
+            self._flicker_thd = Thread(target=self._flicker, kwargs={'stop_event': self._flicker_thd_stop_event, 'period' : period, 'duty_cycle': duty_cycle})
             self._flicker_thd.start()
     
     def stop_flicker(self):
         self._flicker_thd_stop_event.set()
 
-    def _flicker(self, stop_event: Event(), period : float = 0.2):
+    def _flicker(self, stop_event: Event(), period, duty_cycle):
         while not stop_event.is_set():
-            self.toggle()
-            time.sleep(period/2)
-            self.toggle()
-            time.sleep(period/2)
+            self.set_state(True)
+            time.sleep(period*duty_cycle)
+            self.set_state(False)
+            time.sleep(period*(1-duty_cycle))
 
 
 def play_startup_sequence(capture_pin: int, error_pin: int, flash_pin: int) -> None:

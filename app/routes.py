@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, send_from_directory
 from app import app, socketio
 from app.backend.scanner3d_backend import Scanner3D_backend
 from threading import Thread, Event
@@ -48,22 +48,19 @@ def index():
     # Serve the HTML page
     return render_template(HOMEPAGE_TEMPLATE)
 
+@app.route('/cam_imgs/<filename>')
+def serve_image(filename):
+    return send_from_directory('static/cam_imgs', filename)
+
 @socketio.on('refresh_preview')
-def handle_refresh_preview(data):
-    print('Refreshing preview')
-    file_path = backend.refresh_image()
-    print('success image')
-    file_path = file_path.removeprefix('/home/pi/scanner3d/3DScanner/app/')
-    file_path = 'preview.jpg'
-    print(file_path)
-    time.sleep(0.5)
-    # socketio.emit('update_image', {'imagePath': file_path})
+def handle_refresh_preview():
+    file_name = backend.refresh_image()
+    socketio.emit('update_image', {'filename': file_name})
 
     
 
 @socketio.on('start_capture')
 def handle_start_capture(data):
-    handle_refresh_preview(0)
     backend.start(capture_params=data)
 
     # Activate status update

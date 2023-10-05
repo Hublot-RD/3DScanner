@@ -2,10 +2,11 @@ from threading import Thread, Event
 from queue import Queue
 import RPi.GPIO as GPIO
 from time import sleep
-from app.backend.constants import LEDS_PINOUT, FLASH_PIN, INITIAL_STATUS, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_FOLDER
+from random import random
+from app.backend.constants import LEDS_PINOUT, FLASH_PIN, INITIAL_STATUS, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_PATH
 from app.backend.camera_pi import Camera
 from app.backend.led_ctrl import play_startup_sequence
-# from constants import LEDS_PINOUT, FLASH_PIN, INITIAL_STATUS, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_FOLDER
+# from constants import LEDS_PINOUT, FLASH_PIN, INITIAL_STATUS, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_PATH
 # from camera_pi import Camera
 # from led_ctrl import play_startup_sequence
 
@@ -54,12 +55,15 @@ class Scanner3D_backend():
     #     return self.status
     
     def refresh_image(self) -> str:
-        self.cam.capture_preview()
-        return PREVIEW_IMAGE_PATH
+        name = 'preview_' + str(random()).split('.')[-1]
+        # adding a random part to the file name ensures 
+        # that the clien won't have the file already cashed 
+        self.cam.capture_preview(name=name)
+        return name+'.jpg'
     
     def capture_photo(self) -> str:
         self.cam.capture_highres()
-        return HIGHRES_IMAGE_FOLDER
+        return HIGHRES_IMAGE_PATH
     
     def _main_thd_target(self, stop_event: Event(), capture_params: dict) -> None:
         self.obj_height = capture_params['height']

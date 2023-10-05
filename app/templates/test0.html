@@ -11,7 +11,7 @@
     <hr>
     <h1>Interface de commande du scanneur 3D</h1>
 
-    <img id="imageCamera" src="static/cam_imgs/preview.jpg" width="500" alt="Vue de la caméra">
+    <img id="imageCamera" src="{{ url_for('serve_image', filename='default.jpg') }}" width="500" alt="Vue de la caméra">
     <button id="refreshImageCameraButton">Raffraichir la prévisualisation</button>
 
     <!-- OPTIONS -->
@@ -76,6 +76,14 @@
     <script src="{{ url_for('static', filename='socket.io.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> -->
+    <!-- <script>
+        window.onload = function() {
+            location.reload(true);
+        }
+        // This script makes sure that the client has the news version of the web page.
+        // Otherwise, some features may be cashed (images, js code, ...).
+        // It helps a lot during developpment.
+    </script> -->
 
 </body>
 </html>

@@ -33,9 +33,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // var progressBarIndicator = document.getElementById('progressBarIndicator');
 
     // Update functions
-    function updateImageCamera(value) {
-        imageCamera.src = String(value);
-        // imageCamera.src = 'static/cam_imgs/preview.jpg'
+    function updateImageCamera(filename) {
+        if (filename) {
+            console.log("filename is not empty!");
+            console.log('/cam_imgs/' + filename);
+            // imageCamera.src ="{{ url_for('serve_image', filename='" + String(filename) + "') }}"
+            imageCamera.src = '/cam_imgs/' + filename;
+            // imageCamera.src = 'static/cam_imgs/preview.jpg'
+        } else {
+            console.error("Error: Filename is empty!");
+        }
     }
     function updateHeightText(value) {
         if (value) {
@@ -99,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Buttons
     refreshImageCameraButton.addEventListener('click', function() {
-        socket.emit('refresh_preview', 0);
+        socket.emit('refresh_preview');
     });
 
     showMoreOptionButton.addEventListener('click', function() {
@@ -153,6 +160,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.on('update_image', function(data) {
-        updateImageCamera(data.imagePath);
+        updateImageCamera(data.filename);
     });
 });

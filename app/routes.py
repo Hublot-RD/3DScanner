@@ -14,10 +14,6 @@ backend = Scanner3D_backend(status_queue=status_queue)
 status_updator_thd_obj = Thread()
 status_updator_thd_stop = Event()
 
-# Create thread objects for dummy demonstration
-stop_image_event = Event()
-image_thread_obj = Thread()
-
 def status_updator_thd_target(stop_event: Event()) -> None:
     while not stop_event.is_set():
         if status_queue.not_empty:
@@ -28,20 +24,6 @@ def status_updator_thd_target(stop_event: Event()) -> None:
     
     # Closing thread properly
     print('status_updator_thd stopped')
-
-def image_thread(thread_stop_event: Event()):
-    image_number = 0
-
-    while not thread_stop_event.is_set():
-        number = image_number % 180
-        socketio.emit('update_image', {'imageName': 'frame_{0:03}.jpg'.format(number)})
-        image_number += 10
-        time.sleep(0.5)
-    
-    # Closing thread properly
-    print('image_thread is closing')
-    
-
 
 @app.route('/')
 def index():
@@ -57,8 +39,6 @@ def handle_refresh_preview():
     file_name = backend.refresh_image()
     socketio.emit('update_image', {'filename': file_name})
 
-    
-
 @socketio.on('start_capture')
 def handle_start_capture(data):
     backend.start(capture_params=data)
@@ -69,14 +49,6 @@ def handle_start_capture(data):
         status_updator_thd_stop.clear()
         status_updator_thd_obj = Thread(target=status_updator_thd_target, kwargs={'stop_event': status_updator_thd_stop})
         status_updator_thd_obj.start()
-   
-    # Activate image update
-    global image_thread_obj
-    if not image_thread_obj.is_alive():
-        stop_image_event.clear()
-        image_thread_obj = Thread(target=image_thread, kwargs={'thread_stop_event': stop_image_event})
-        image_thread_obj.start()
-
 
 @socketio.on('stop_capture')
 def handle_stop_capture():
@@ -87,10 +59,6 @@ def handle_stop_capture():
 
     # Stop status update
     status_updator_thd_stop.set()
-
-    # Stop image update
-    stop_image_event.set()
-    image_thread_obj.join()
 
 @socketio.on('light_toggled')
 def handle_light_toggled(data):

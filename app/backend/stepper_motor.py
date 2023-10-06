@@ -1,7 +1,10 @@
 import RPi.GPIO as GPIO
 import time
 import warnings
-from constants import SCREW_PITCH
+try:
+    from app.backend.constants import SCREW_PITCH
+except:
+    from constants import SCREW_PITCH
 from threading import Thread
 
 
@@ -22,6 +25,7 @@ class StepperMotor:
         self._step_time = 1.0/self._deg2step(abs(speed))
         self.pinout = pinout
         self.step_cnt = 0
+        self.is_busy = False
         self._clockwise = True
         self._target_steps = 0
 
@@ -75,8 +79,10 @@ class StepperMotor:
         '''
         self.set_rotation_direction(clockwise=(angle < 0))
         nb_steps = self._deg2step(abs(angle))
+        self.is_busy = True
         for _ in range(int(nb_steps)):
             self._one_step()
+        self.is_busy = False
     
     def set_rotation_direction(self, clockwise: bool) -> None:
         if clockwise:
@@ -104,20 +110,24 @@ class StepperMotor:
             if self._target_steps > 0 and not self._clockwise:
                 self._one_step()
                 self._target_steps -= 1
+                self.is_busy = True
             elif self._target_steps > 0 and self._clockwise:
                 self.set_rotation_direction(clockwise=True)
                 self._one_step()
                 self._target_steps -= 1
+                self.is_busy = True
             elif self._target_steps < 0 and self._clockwise:
                 self._one_step()
                 self._target_steps += 1
+                self.is_busy = True
             elif self._target_steps < 0 and not self._clockwise:
                 self.set_rotation_direction(clockwise=False)
                 self._one_step()
                 self._target_steps += 1
+                self.is_busy = True
             else:
                 time.sleep(2*self._step_time)
-                continue
+                self.is_busy = False
 
 
 class CameraAxis(StepperMotor):
@@ -131,7 +141,8 @@ class CameraAxis(StepperMotor):
         -step_per_revolution: full steps per revolution of the stepper motor. Default = 200
         """
         self.translation_speed = speed
-        super().__init__(pinout=pinout, resolution=resolution, step_per_revolution=step_per_revolution, speed=self.translation_speed/SCREW_PITCH) 
+        super().__init__(pinout=pinout, resolution=resolution, step_per_revolution=step_per_revolution, speed=self.translation_speed/SCREW_PITCH)
+        self.set_rotation_direction(clockwise=False)
     
     def rotate(self, distance: float):
         angle = distance/SCREW_PITCH
@@ -144,16 +155,17 @@ class CameraAxis(StepperMotor):
         self._step_time = SCREW_PITCH/self._deg2step(speed)
     
     def set_target_position(self, distance: float):
-        """
-        Setting this position will make the motor turn. This is the prefered way of controlling the motor.
-        """
         angle = distance/SCREW_PITCH
         self._target_steps = self._deg2step(angle)
+
+    def home(self) -> None:
+        print("Warning: CameraAxis.home() is not implemented!")
+        pass
 
 
 if __name__ == '__main__':
     import argparse
-    import app.backend.MP6500_pinout as MP6500_pinout
+    from constants import MOTOR_CAMERA_PINOUT, MOTOR_TURNTABLE_PINOUT
 
     parser = argparse.ArgumentParser(description='Test code to make the stepper motor turn.')
     parser.add_argument('--angle', dest='angle', default=90, type=float,
@@ -171,8 +183,8 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
     
     # Create stepper objects
-    stepper_turntable = StepperMotor(pinout=MP6500_pinout.TURNTABLE, speed=args['speed_r'], resolution=args['resolution'])
-    stepper_cam = CameraAxis(pinout=MP6500_pinout.CAMERA, speed=args['speed_t'], resolution=args['resolution'])
+    stepper_turntable = StepperMotor(pinout=MOTOR_TURNTABLE_PINOUT, speed=args['speed_r'], resolution=args['resolution'])
+    stepper_cam = CameraAxis(pinout=MOTOR_CAMERA_PINOUT, speed=args['speed_t'], resolution=args['resolution'])
 
 
     # Basic motor tests

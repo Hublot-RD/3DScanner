@@ -14,6 +14,9 @@ class LED_Controller():
         self._flicker_thd = Thread()
         self._flicker_thd_stop_event = Event()
 
+        # Set GPIO pin as output
+        GPIO.setup(self.pin, GPIO.OUT)
+
     def set_state(self, on: bool):
         self.state = on
         if (self.reversed and on) or (not self.reversed and not on):

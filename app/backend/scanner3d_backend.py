@@ -3,16 +3,17 @@ from queue import Queue
 import RPi.GPIO as GPIO
 from time import sleep
 from random import random
-from app.backend.constants import LEDS_PINOUT, FLASH_PIN, INITIAL_STATUS, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_PATH
+import app.backend.constants as cst 
 from app.backend.camera_pi import Camera
-from app.backend.led_ctrl import play_startup_sequence
-# from constants import LEDS_PINOUT, FLASH_PIN, INITIAL_STATUS, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_PATH
-# from camera_pi import Camera
-# from led_ctrl import play_startup_sequence
+from app.backend.led_ctrl import LED_Controller, play_startup_sequence
+from app.backend.stepper_motor import StepperMotor, CameraAxis
 
 
 class Scanner3D_backend():
     def __init__(self, status_queue: Queue) -> None:
+        # Set GPIO mode to board for retro and future compatibility
+        GPIO.setmode(GPIO.BOARD)
+        
         # Create Thread related objects
         self._main_thd_stop = Event()
         self.stop_image_event = Event()
@@ -23,24 +24,40 @@ class Scanner3D_backend():
         self._status_queue = status_queue
 
         # Set initial status
-        self._status = INITIAL_STATUS
+        self._status = cst.INITIAL_STATUS
 
+        # Create motor objects
+        self._mot_turntable = StepperMotor(pinout=cst.MOTOR_TURNTABLE_PINOUT)
+        self._mot_camera = CameraAxis(pinout=cst.MOTOR_CAMERA_PINOUT)
+
+        # Create LEDs objects
+        self._led_flash = LED_Controller(cst.FLASH_PIN)
+        self._led_capture = LED_Controller(cst.LEDS_PINOUT['CAPTURE'],)
+        self._led_error = LED_Controller(cst.LEDS_PINOUT['ERROR'],)
 
         # Play LED animation
-        # GPIO.setmode(GPIO.BOARD)
-        # GPIO.setup((FLASH_PIN, *LEDS_PINOUT.values()), GPIO.OUT)
-        # play_startup_sequence(capture_pin=LEDS_PINOUT['CAPTURE'], error_pin=LEDS_PINOUT['ERROR'], flash_pin=FLASH_PIN)
-        sleep(1)
+        # play_startup_sequence(capture_pin=self._led_capture.pin, error_pin=self._led_error.pin, flash_pin=self._led_flash.pin)
+        # sleep(1)
 
         # Start the camera
-        self.cam = Camera()
+        self._cam = Camera()
 
 
         # Home the z axis
+        self._mot_camera.home()
 
         pass
 
     def start(self, capture_params: dict) -> None:
+        # Save capture parameters
+        self._obj_height = float(capture_params['height'])
+        self._obj_detail = capture_params['detail']
+        self._obj_name = capture_params['obj_name']
+
+        print('Object name:', self._obj_name)
+        print('Object height:', self._obj_height)
+        print('Object details level:', self._obj_detail)
+
         # Start main thread
         if not self._main_thd_obj.is_alive():
             self._main_thd_stop.clear()
@@ -49,46 +66,36 @@ class Scanner3D_backend():
 
     def stop(self) -> None:
         self._main_thd_stop.set()
-        self._status = INITIAL_STATUS
-
-    # def get_status(self) -> str:
-    #     return self.status
+        self._status = cst.INITIAL_STATUS
     
     def refresh_image(self) -> str:
         name = 'preview_' + str(random()).split('.')[-1]
         # adding a random part to the file name ensures 
         # that the clien won't have the file already cashed 
-        self.cam.capture_preview(name=name)
+        self._cam.capture_preview(name=name)
         return name+'.jpg'
     
-    def capture_photo(self) -> str:
-        self.cam.capture_highres()
-        return HIGHRES_IMAGE_PATH
+    # def _capture_photo(self) -> str:
+    #     self._cam.capture_highres()
+    #     return cst.HIGHRES_IMAGE_PATH
     
     def _main_thd_target(self, stop_event: Event(), capture_params: dict) -> None:
-        self.obj_height = capture_params['height']
-        self.obj_detail = capture_params['detail']
-        self.obj_name = capture_params['obj_name']
-
         print('\nCapture started')
-        print('Object name:', self.obj_name)
-        print('Object height:', self.obj_height)
-        print('Object details level:', self.obj_detail)
 
-        # Dummy function
-        texts = ["Processing", "Processing.", "Processing..", "Processing..."]
-        cnt = 0
-        info = {'progress_value': 0, 'text_value': texts[cnt]}
+        # # Dummy function
+        # texts = ["Processing", "Processing.", "Processing..", "Processing..."]
+        # cnt = 0
+        # info = {'progress_value': 0, 'text_value': texts[cnt]}
 
-        while not stop_event.is_set():
-            cnt += 1
-            info['progress_value'] = cnt % 101
-            info['text_value'] = texts[cnt%4]
-            self._update_status(info)
-            sleep(0.2)
+        # while not stop_event.is_set():
+        #     cnt += 1
+        #     info['progress_value'] = cnt % 101
+        #     info['text_value'] = texts[cnt%4]
+        #     self._update_status(info)
+        #     sleep(0.2)
 
         # Closing thread properly
-        print('_main_thd closed')
+        # print('_main_thd closed')
 
         
 
@@ -96,13 +103,8 @@ class Scanner3D_backend():
 
         # Home the z axis
 
-        # Repeat :
-
-        #   Take pictures all around object
-
-        #   Move camera up
-
-        #   Save picture to USB stick
+        # Take pictures of the object
+        self._capture_whole_object(height_increment=42, rotation_increment=80)
 
         # Exit properly
 
@@ -113,6 +115,56 @@ class Scanner3D_backend():
     def _update_status(self, info: dict) -> None:
         self._status = {k: info[k] if k in info else v for k, v in self._status.items()}
         self._status_queue.put(self._status)
+
+    def _capture360deg(self, rotation_increment: float) -> float:
+        remaining_angle = 360.0
+        print('remaining_angle', remaining_angle)
+        while remaining_angle >= rotation_increment:
+            # Capture image with flash
+            self._led_flash.set_state(True)
+            self._cam.capture_highres()
+            self._led_flash.set_state(False)
+
+            # Move turntable
+            sleep(cst.PAUSE_IMAGES_MOTOR)
+            self._mot_turntable.rotate(rotation_increment)
+            remaining_angle -= rotation_increment
+            print('remaining_angle', remaining_angle)
+            sleep(cst.PAUSE_IMAGES_MOTOR)
+        
+        # Capture last image
+        self._led_flash.set_state(True)
+        self._cam.capture_highres()
+        self._led_flash.set_state(False)
+        sleep(cst.PAUSE_IMAGES_MOTOR)
+
+        return remaining_angle
+    
+    def _capture_whole_object(self, height_increment: float, rotation_increment: float) -> None:
+        remaining_height = 10*self._obj_height # cm to mm
+        print('remaining_height', remaining_height)
+        while remaining_height >= height_increment:
+            # Take pictures all around object
+            remaining_angle = self._capture360deg(rotation_increment=rotation_increment)
+            
+            # Move camera up and turntable to initial position
+            self._mot_camera.set_target_position(distance=height_increment)
+            self._mot_turntable.set_target_position(angle=remaining_angle)
+            remaining_height -= height_increment
+
+            #   Save picture to USB stick
+
+            # Wait for this height to be finished
+            while self._mot_camera.is_busy or self._mot_turntable.is_busy:
+                print('sleeping')
+                sleep(0.1)
+            print('remaining_height', remaining_height)
+            sleep(cst.PAUSE_IMAGES_MOTOR)
+        
+
+
+
+            
 
 if __name__ == '__main__':
     from time import sleep

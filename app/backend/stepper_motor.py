@@ -72,6 +72,8 @@ class StepperMotor:
         Setting this position will make the motor turn. This is the prefered way of controlling the motor.
         """
         self._target_steps = self._deg2step(angle)
+        if self._target_steps != 0:
+            self.is_busy = True
 
     def rotate(self, angle: float) -> None:
         '''
@@ -112,7 +114,7 @@ class StepperMotor:
                 self._target_steps -= 1
                 self.is_busy = True
             elif self._target_steps > 0 and self._clockwise:
-                self.set_rotation_direction(clockwise=True)
+                self.set_rotation_direction(clockwise=False)
                 self._one_step()
                 self._target_steps -= 1
                 self.is_busy = True
@@ -121,7 +123,7 @@ class StepperMotor:
                 self._target_steps += 1
                 self.is_busy = True
             elif self._target_steps < 0 and not self._clockwise:
-                self.set_rotation_direction(clockwise=False)
+                self.set_rotation_direction(clockwise=True)
                 self._one_step()
                 self._target_steps += 1
                 self.is_busy = True
@@ -157,6 +159,8 @@ class CameraAxis(StepperMotor):
     def set_target_position(self, distance: float):
         angle = distance/SCREW_PITCH
         self._target_steps = self._deg2step(angle)
+        if self._target_steps != 0:
+            self.is_busy = True
 
     def home(self) -> None:
         print("Warning: CameraAxis.home() is not implemented!")
@@ -187,12 +191,12 @@ if __name__ == '__main__':
     stepper_cam = CameraAxis(pinout=MOTOR_CAMERA_PINOUT, speed=args['speed_t'], resolution=args['resolution'])
 
 
-    # Basic motor tests
-    print('Testing with .rotate')
-    if args['axis'] == 0 or args['axis'] == 2:
-        stepper_turntable.rotate(angle=args['angle'])
-    if args['axis'] == 1 or args['axis'] == 2:
-        stepper_cam.rotate(distance=args['distance'])
+    # # Basic motor tests
+    # print('Testing with .rotate')
+    # if args['axis'] == 0 or args['axis'] == 2:
+    #     stepper_turntable.rotate(angle=args['angle'])
+    # if args['axis'] == 1 or args['axis'] == 2:
+    #     stepper_cam.rotate(distance=args['distance'])
 
 
     time.sleep(1)
@@ -200,12 +204,17 @@ if __name__ == '__main__':
     if args['axis'] == 0 or args['axis'] == 2:
         stepper_turntable.set_target_position(angle=args['angle'])
     if args['axis'] == 1 or args['axis'] == 2:
+        print('distance: ', args['distance'])
+        print('stepper_cam._clockwise: ', stepper_cam._clockwise)
         stepper_cam.set_target_position(distance=args['distance'])
+        print('stepper_cam._clockwise: ', stepper_cam._clockwise)
+    
     # simulate another task
-    while abs(stepper_turntable._target_steps) > 0 or abs(stepper_cam._target_steps) > 0:
+    while stepper_cam.is_busy or stepper_turntable.is_busy:
         time.sleep(0.1)
+        print('stepper_cam._clockwise: ', stepper_cam._clockwise)
         continue
-
+    
     print('Done !')
     
 

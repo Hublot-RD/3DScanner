@@ -7,6 +7,7 @@ import app.backend.constants as cst
 from app.backend.camera_pi import Camera
 from app.backend.led_ctrl import LED_Controller, play_startup_sequence
 from app.backend.stepper_motor import StepperMotor, CameraAxis
+from app.backend.usb_interface import USBStorage, get_usb_drives_list
 
 
 class Scanner3D_backend():
@@ -39,14 +40,6 @@ class Scanner3D_backend():
         # play_startup_sequence(capture_pin=self._led_capture.pin, error_pin=self._led_error.pin, flash_pin=self._led_flash.pin)
         # sleep(1)
 
-        # Start the camera
-        self._cam = Camera()
-
-
-        # Home the z axis
-        self._mot_camera.home()
-
-        pass
 
     def start(self, capture_params: dict) -> None:
         # Save capture parameters
@@ -58,6 +51,16 @@ class Scanner3D_backend():
         print('Object height:', self._obj_height)
         print('Object details level:', self._obj_detail)
 
+        # Home the z axis
+        # self._mot_camera.home()
+
+        # Create USB storage object
+        capture_params['usb_storage_loc'] = '/media/pi/INTENSO/' # DONT FORGET TO CHANGE THAT !
+        self._usb_storage = USBStorage(loc=capture_params['usb_storage_loc'])
+
+        # Start the camera
+        self._cam = Camera(object_name=self._obj_name, usb_storage=self._usb_storage)
+
         # Start main thread
         if not self._main_thd_obj.is_alive():
             self._main_thd_stop.clear()
@@ -67,6 +70,9 @@ class Scanner3D_backend():
     def stop(self) -> None:
         self._main_thd_stop.set()
         self._status = cst.INITIAL_STATUS
+        self._led_capture.set_state(on=False)
+        self._led_error.set_state(on=False) # DO I REALLY WANT TO RESET ERROR ?
+        self._led_flash.set_state(on=False)
     
     def refresh_image(self) -> str:
         name = 'preview_' + str(random()).split('.')[-1]
@@ -100,6 +106,7 @@ class Scanner3D_backend():
         
 
         # Start blink capture LED
+        self._led_capture.start_flicker()
 
         # Home the z axis
 
@@ -109,6 +116,8 @@ class Scanner3D_backend():
         # Exit properly
 
         # Stop blink capture LED, ON continuous
+        self._led_capture.stop_flicker()
+        self._led_capture.set_state(on=True)
 
         # Wait for user restart (or see how I want to handle end of capture)
 
@@ -118,7 +127,7 @@ class Scanner3D_backend():
 
     def _capture360deg(self, rotation_increment: float) -> float:
         remaining_angle = 360.0
-        print('remaining_angle', remaining_angle)
+        # print('remaining_angle', remaining_angle)
         while remaining_angle >= rotation_increment:
             # Capture image with flash
             self._led_flash.set_state(True)
@@ -129,7 +138,7 @@ class Scanner3D_backend():
             sleep(cst.PAUSE_IMAGES_MOTOR)
             self._mot_turntable.rotate(rotation_increment)
             remaining_angle -= rotation_increment
-            print('remaining_angle', remaining_angle)
+            # print('remaining_angle', remaining_angle)
             sleep(cst.PAUSE_IMAGES_MOTOR)
         
         # Capture last image
@@ -142,7 +151,6 @@ class Scanner3D_backend():
     
     def _capture_whole_object(self, height_increment: float, rotation_increment: float) -> None:
         remaining_height = 10*self._obj_height # cm to mm
-        print('remaining_height', remaining_height)
         while remaining_height >= height_increment:
             # Take pictures all around object
             remaining_angle = self._capture360deg(rotation_increment=rotation_increment)
@@ -152,14 +160,13 @@ class Scanner3D_backend():
             self._mot_turntable.set_target_position(angle=remaining_angle)
             remaining_height -= height_increment
 
-            #   Save picture to USB stick
-
             # Wait for this height to be finished
             while self._mot_camera.is_busy or self._mot_turntable.is_busy:
-                print('sleeping')
                 sleep(0.1)
-            print('remaining_height', remaining_height)
             sleep(cst.PAUSE_IMAGES_MOTOR)
+
+        # unmount usb storage
+        self._usb_storage.umount()
         
 
 

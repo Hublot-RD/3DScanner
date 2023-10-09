@@ -1,17 +1,25 @@
 from picamera2 import Picamera2
 from time import sleep
-from os import remove
+from os import remove, mkdir
+from os.path import isdir
 from glob import glob
-from app.backend.constants import CAMERA_RESOLUTION_HIGHRES, CAMERA_RESOLUTION_PREVIEW, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_PATH
-# from constants import CAMERA_RESOLUTION_HIGHRES, CAMERA_RESOLUTION_PREVIEW, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_FOLDER
+try:
+    from app.backend.usb_interface import USBStorage
+    from app.backend.constants import CAMERA_RESOLUTION_HIGHRES, CAMERA_RESOLUTION_PREVIEW, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_PATH
+except:
+    from usb_interface import USBStorage
+    from constants import CAMERA_RESOLUTION_HIGHRES, CAMERA_RESOLUTION_PREVIEW, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_PATH
+
 
 
 class Camera():
-    def __init__(self) -> None:
+    def __init__(self, object_name: str, usb_storage: USBStorage) -> None:
         self._cam = Picamera2()
         self._preview_mode = True
         self._highres_img_cnt = 0
         self._previous_preview_path = None
+        self._usb_storage = usb_storage
+        self._object_name = object_name
 
         self._set_preview_mode(self._preview_mode)
         if not self._cam.started:
@@ -22,10 +30,20 @@ class Camera():
             remove(filename)
 
     def capture_highres(self) -> dict:
+        '''
+        Captures a high resolution image and saves it both on the RPi and the USB storage.
+        '''
         self._set_preview_mode(False)
-        name = 'img_{0:03}.jpg'.format(self._highres_img_cnt)
+        name = self._object_name + '_{0:03}.jpg'.format(self._highres_img_cnt)
         self._highres_img_cnt += 1
-        metadata = self._cam.capture_file(HIGHRES_IMAGE_PATH + name)
+        path = HIGHRES_IMAGE_PATH + self._object_name + '/' 
+        if not isdir(path):
+            mkdir(path)
+        dest_folder = self._usb_storage.loc + self._object_name + '/'
+        if not isdir(dest_folder):
+            mkdir(dest_folder)
+        metadata = self._cam.capture_file(path+name)
+        self._usb_storage.copy_file_to(file_path=path+name, dest_folder=dest_folder)
         return metadata
     
     def capture_preview(self, name: str) -> dict:
@@ -60,8 +78,8 @@ class Camera():
 
 
 if __name__ == "__main__":
-    my_cam = Camera()
-    my_cam.capture_preview()
+    my_cam = Camera(object_name='test', usb_storage=USBStorage(loc='/media/pi/INTENSO/'))
+    my_cam.capture_preview(name='ma_photo')
     print('success')
     my_cam.reset()
     meta = my_cam.capture_highres()

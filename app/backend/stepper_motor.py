@@ -30,7 +30,6 @@ class StepperMotor:
         self._target_steps = 0
 
         # Set GPIOs
-        GPIO.setmode(GPIO.BOARD)
         GPIO.setwarnings(False)
         GPIO.setup((self.pinout['STEP'], self.pinout['DIR'], self.pinout['nSLEEP'], self.pinout['MS1'], self.pinout['MS2']), GPIO.OUT)
         GPIO.setwarnings(True)
@@ -133,7 +132,7 @@ class StepperMotor:
 
 
 class CameraAxis(StepperMotor):
-    def __init__(self, pinout: dict, speed: float = 180, step_per_revolution: int = 200, resolution: int = 8):
+    def __init__(self, pinout: dict, speed: float = 10, step_per_revolution: int = 200, resolution: int = 8):
         """
         Stepper motor of the camera axis.
 
@@ -145,6 +144,13 @@ class CameraAxis(StepperMotor):
         self.translation_speed = speed
         super().__init__(pinout=pinout, resolution=resolution, step_per_revolution=step_per_revolution, speed=self.translation_speed/SCREW_PITCH)
         self.set_rotation_direction(clockwise=False)
+
+        # Create interrupt for the homing sensor
+        GPIO.setwarnings(False)
+        GPIO.setup(pinout['HOMING_SWITCH_PIN'], GPIO.IN)
+        GPIO.setwarnings(True)
+        GPIO.add_event_detect(pinout['HOMING_SWITCH_PIN'], GPIO.FALLING, callback=self._homing_switch_triggered, bouncetime=200)
+        self.at_home = False
     
     def rotate(self, distance: float):
         angle = distance/SCREW_PITCH
@@ -163,8 +169,42 @@ class CameraAxis(StepperMotor):
             self.is_busy = True
 
     def home(self) -> None:
-        print("Warning: CameraAxis.home() is not implemented!")
-        pass
+        # go down "fast"
+        print('go down "fast"')
+        self.set_target_position(-1000)
+
+        # wait for self.at_home
+        while not self.at_home:
+            print('waiting for at_home')
+            time.sleep(0.1)
+
+        # go up 10 mm
+        print('go up 10 mm')
+        self.set_target_position(10)
+        self.at_home = False
+
+        while self.is_busy:
+            print('waiting for is_busy')
+            time.sleep(0.1)
+        
+        # go down slow
+        print('go down slow')
+        self.set_speed(2)
+        self.set_target_position(-20)
+
+        # wait for self.at_home
+        while not self.at_home:
+            print('waiting for at_home')
+            time.sleep(0.1)
+
+        # stop motor (and save position as home ?)
+        self.set_target_position(0)
+        self.at_home = False
+        print('homing finished')
+
+    def _homing_switch_triggered(self):
+        self.at_home = True
+
 
 
 if __name__ == '__main__':
@@ -185,6 +225,8 @@ if __name__ == '__main__':
     parser.add_argument('--axis', dest='axis', default=2, type=int,
                         help="Which axis to control. 0 == turntable, 1 == camera, 2 == both. (default: 2)")
     args = vars(parser.parse_args())
+
+    GPIO.setmode(GPIO.BOARD)
     
     # Create stepper objects
     stepper_turntable = StepperMotor(pinout=MOTOR_TURNTABLE_PINOUT, speed=args['speed_r'], resolution=args['resolution'])
@@ -198,21 +240,19 @@ if __name__ == '__main__':
     # if args['axis'] == 1 or args['axis'] == 2:
     #     stepper_cam.rotate(distance=args['distance'])
 
-
+    # Homing camera axis
+    # stepper_cam.home()
     time.sleep(1)
+
     print('Testing with internal threads')
     if args['axis'] == 0 or args['axis'] == 2:
         stepper_turntable.set_target_position(angle=args['angle'])
     if args['axis'] == 1 or args['axis'] == 2:
-        print('distance: ', args['distance'])
-        print('stepper_cam._clockwise: ', stepper_cam._clockwise)
         stepper_cam.set_target_position(distance=args['distance'])
-        print('stepper_cam._clockwise: ', stepper_cam._clockwise)
     
     # simulate another task
     while stepper_cam.is_busy or stepper_turntable.is_busy:
         time.sleep(0.1)
-        print('stepper_cam._clockwise: ', stepper_cam._clockwise)
         continue
     
     print('Done !')

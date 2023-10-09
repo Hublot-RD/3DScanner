@@ -2,7 +2,6 @@ LEDS_PINOUT = {'CAPTURE' : 5,
                'ERROR' : 3,
                }
 FLASH_PIN = 13
-
 MOTOR_TURNTABLE_PINOUT = {'STEP' : 36,
                         'DIR' : 38,
                         'nSLEEP' : 40,
@@ -14,6 +13,7 @@ MOTOR_CAMERA_PINOUT = {'STEP' : 33,
                         'nSLEEP' : 37,
                         'MS1' : 32,
                         'MS2' : 31,
+                        'HOMING_SWITCH_PIN' : 26, 
                         }
 
 SCREW_PITCH = 8/360 # [mm/°] Pitch of the screw used for the camera axis

@@ -122,6 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     refreshImageCameraButton.addEventListener('click', function() {
+        refreshImageCameraButton.disabled = true;
         socket.emit('refresh_preview');
     });
 
@@ -190,5 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.on('update_image', function(data) {
         updateImageCamera(data.filename);
+        refreshImageCameraButton.disabled = false;
     });
 });

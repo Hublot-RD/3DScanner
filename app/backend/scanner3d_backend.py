@@ -56,7 +56,7 @@ class Scanner3D_backend():
 
         # Create USB storage object
         if capture_params['usb_storage_loc'] == 'Aucun':
-            pass
+            self._usb_storage = None
         else:
             self._usb_storage = USBStorage(name=capture_params['usb_storage_loc'])
 
@@ -70,7 +70,9 @@ class Scanner3D_backend():
             main_thread_obj.start()
 
     def stop(self) -> None:
+        # Stop process
         self._main_thd_stop.set()
+        
         self._status = cst.INITIAL_STATUS
         self._led_capture.set_state(on=False)
         self._led_error.set_state(on=False) # DO I REALLY WANT TO RESET ERROR ?
@@ -81,7 +83,9 @@ class Scanner3D_backend():
         name = 'preview_' + str(random()).split('.')[-1]
         # adding a random part to the file name ensures 
         # that the clien won't have the file already cashed
-        self._cam.capture_preview(name=name)
+        tmp_cam = Camera(object_name='preview', usb_storage=None)
+        tmp_cam.capture_preview(name=name)
+        del(tmp_cam)
         return name+'.jpg'
     
     def refresh_usb_list(self) -> list:
@@ -120,13 +124,15 @@ class Scanner3D_backend():
         # Home the z axis
 
         # Take pictures of the object
-        self._capture_whole_object(height_increment=42, rotation_increment=80)
-
-        # Exit properly
+        self._capture_whole_object(height_increment=42, rotation_increment=350)
 
         # Stop blink capture LED, ON continuous
         self._led_capture.stop_flicker()
+        sleep(cst.PAUSE_IMAGES_MOTOR)
         self._led_capture.set_state(on=True)
+
+        # Exit properly
+        
 
         # Wait for user restart (or see how I want to handle end of capture)
 
@@ -175,7 +181,8 @@ class Scanner3D_backend():
             sleep(cst.PAUSE_IMAGES_MOTOR)
 
         # unmount usb storage
-        self._usb_storage.umount()
+        if self._usb_storage is not None:
+            self._usb_storage.umount()
         
 
 

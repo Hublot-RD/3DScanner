@@ -28,6 +28,12 @@ class Camera():
         # Delete all existing preview images
         for filename in glob(PREVIEW_IMAGE_PATH +"preview_*"):
             remove(filename)
+    
+    def __del__(self) -> None:
+        print('deleting camera')
+        self._cam.close()
+        del(self._cam)
+        print('should have worked')
 
     def capture_highres(self) -> dict:
         '''
@@ -39,11 +45,12 @@ class Camera():
         path = HIGHRES_IMAGE_PATH + self._object_name + '/' 
         if not isdir(path):
             mkdir(path)
-        dest_folder = self._usb_storage.loc + self._object_name + '/'
-        if not isdir(dest_folder):
-            mkdir(dest_folder)
         metadata = self._cam.capture_file(path+name)
-        self._usb_storage.copy_file_to(file_path=path+name, dest_folder=dest_folder)
+        if self._usb_storage is not None:
+            dest_folder = self._usb_storage.loc + self._object_name + '/'
+            if not isdir(dest_folder):
+                mkdir(dest_folder)
+            self._usb_storage.copy_file_to(file_path=path+name, dest_folder=dest_folder)
         return metadata
     
     def capture_preview(self, name: str) -> dict:

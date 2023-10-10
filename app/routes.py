@@ -39,6 +39,11 @@ def handle_refresh_preview():
     file_name = backend.refresh_image()
     socketio.emit('update_image', {'filename': file_name})
 
+@socketio.on('refresh_usb_list')
+def handle_refresh_preview():
+    device_list = backend.refresh_usb_list()
+    socketio.emit('update_usb_list', {'device_list': device_list})
+
 @socketio.on('start_capture')
 def handle_start_capture(data):
     backend.start(capture_params=data)

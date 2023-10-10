@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Name
     var nameField = document.getElementById('objectNameField');
     var nameText = document.getElementById('objectNameText');
+    // USB Device
+    var usbDeviceDropdown = document.getElementById('usbDeviceDropdown');
     // More options
     var showMoreOptionButton = document.getElementById('showMoreOptionButton');
     var hideMoreOptionButton = document.getElementById('hideMoreOptionButton');
@@ -67,6 +69,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 detailText.innerHTML = 'Une erreur est survenue.'; // mettre la valeur en string ici
           }
     }
+    function updateusbDeviceDropdown(usbDeviceList) {      
+        // Remove existing options
+        while (usbDeviceDropdown.firstChild) {
+            usbDeviceDropdown.removeChild(usbDeviceDropdown.firstChild);
+        }
+
+        // Add new options
+        usbDeviceList.push('Aucun')
+        usbDeviceList.forEach(function(option) {
+            var optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            usbDeviceDropdown.appendChild(optionElement);
+        });
+    }
 
     function formatNameText(value) {
         text = value.trim();
@@ -91,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Sliders
+    // Event listners
     heightSlider.oninput = function() {
         updateHeightText(this.value);
     }
@@ -104,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
         nameText.innerHTML = formatNameText(this.value) + '000.jpg';
     }
 
-    // Buttons
     refreshImageCameraButton.addEventListener('click', function() {
         socket.emit('refresh_preview');
     });
@@ -130,9 +146,14 @@ document.addEventListener('DOMContentLoaded', function() {
         var heightSliderValue = heightSlider.value;
         var detailSliderValue = detailSlider.value;
         var nameFieldValue = formatNameText(nameField.value);
-        var obj_infos =  {height: heightSliderValue, detail: detailSliderValue, obj_name: nameFieldValue}
+        var usb_device = usbDeviceDropdown.options[usbDeviceDropdown.selectedIndex].value
+        var infos =  {height: heightSliderValue, 
+                      detail: detailSliderValue, 
+                      obj_name: nameFieldValue,
+                      usb_storage_loc: usb_device,
+                    }
         
-        socket.emit('start_capture',  obj_infos);
+        socket.emit('start_capture',  infos);
 
         // show new elements to web page
         goButton.disabled = true;
@@ -153,6 +174,14 @@ document.addEventListener('DOMContentLoaded', function() {
         updateProgressText();
     });
 
+    usbDeviceDropdown.addEventListener('click', function() {
+        console.log('click detected')
+        socket.emit('refresh_usb_list')
+    });
+    
+    socket.on('update_usb_list', function(data) {
+        updateusbDeviceDropdown(data.device_list); 
+    });
 
     socket.on('update_progress', function(data) {
         updateProgressBar(data.progress_value);

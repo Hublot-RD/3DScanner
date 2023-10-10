@@ -23,10 +23,20 @@ def get_usb_drives_list() -> list:
     return usb_drives
 
 class USBStorage():
-    def __init__(self, loc: str):
-        self.loc = loc
-        self.name = loc.split('/')[-1]
-        self.mounted = True
+    def __init__(self, name: str):
+        self.mounted = False
+        self.name = name
+
+        self.loc = None
+        locs = get_usb_drives_list()
+        for loc in locs:
+            if loc.find(self.name) != -1:
+                self.loc = loc + '/'
+                break
+
+        if self.loc is not None:
+            self.mounted = True
+            
 
     def move_file_to(self, file_path: str, dest_folder: str) -> None:
         file_dest = dest_folder + file_path.split('/')[-1]
@@ -40,6 +50,7 @@ class USBStorage():
         cmd = 'sudo umount ' + self.loc
         subprocess.Popen(str(cmd), shell=True, stdout=subprocess.PIPE)
         sleep(1)
+        self.mounted = False
 
 
 if __name__ == '__main__':

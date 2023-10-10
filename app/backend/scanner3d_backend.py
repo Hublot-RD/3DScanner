@@ -33,8 +33,8 @@ class Scanner3D_backend():
 
         # Create LEDs objects
         self._led_flash = LED_Controller(cst.FLASH_PIN)
-        self._led_capture = LED_Controller(cst.LEDS_PINOUT['CAPTURE'],)
-        self._led_error = LED_Controller(cst.LEDS_PINOUT['ERROR'],)
+        self._led_capture = LED_Controller(cst.LEDS_PINOUT['CAPTURE'], reversed=True)
+        self._led_error = LED_Controller(cst.LEDS_PINOUT['ERROR'], reversed=True)
 
         # Play LED animation
         # play_startup_sequence(capture_pin=self._led_capture.pin, error_pin=self._led_error.pin, flash_pin=self._led_flash.pin)
@@ -55,8 +55,10 @@ class Scanner3D_backend():
         # self._mot_camera.home()
 
         # Create USB storage object
-        capture_params['usb_storage_loc'] = '/media/pi/INTENSO/' # DONT FORGET TO CHANGE THAT !
-        self._usb_storage = USBStorage(loc=capture_params['usb_storage_loc'])
+        if capture_params['usb_storage_loc'] == 'Aucun':
+            pass
+        else:
+            self._usb_storage = USBStorage(name=capture_params['usb_storage_loc'])
 
         # Start the camera
         self._cam = Camera(object_name=self._obj_name, usb_storage=self._usb_storage)
@@ -73,13 +75,20 @@ class Scanner3D_backend():
         self._led_capture.set_state(on=False)
         self._led_error.set_state(on=False) # DO I REALLY WANT TO RESET ERROR ?
         self._led_flash.set_state(on=False)
+        self._cam.reset()
     
     def refresh_image(self) -> str:
         name = 'preview_' + str(random()).split('.')[-1]
         # adding a random part to the file name ensures 
-        # that the clien won't have the file already cashed 
+        # that the clien won't have the file already cashed
         self._cam.capture_preview(name=name)
         return name+'.jpg'
+    
+    def refresh_usb_list(self) -> list:
+        paths = get_usb_drives_list()
+        devices = [path.split('/')[-1] for path in paths]
+        return devices
+
     
     # def _capture_photo(self) -> str:
     #     self._cam.capture_highres()

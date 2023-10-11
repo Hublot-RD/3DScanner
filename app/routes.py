@@ -57,7 +57,7 @@ def handle_start_capture(data):
 
 @socketio.on('stop_capture')
 def handle_stop_capture():
-    print('\nCapture stopped')
+    print('stop_capture received')
 
     # Stop backend
     backend.stop()

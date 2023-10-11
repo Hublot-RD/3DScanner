@@ -30,10 +30,8 @@ class Camera():
             remove(filename)
     
     def __del__(self) -> None:
-        print('deleting camera')
         self._cam.close()
         del(self._cam)
-        print('should have worked')
 
     def capture_highres(self) -> dict:
         '''

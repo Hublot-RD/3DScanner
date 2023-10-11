@@ -28,14 +28,5 @@ INITIAL_STATUS = {'state': 'Idle',
 
 PREVIEW_IMAGE_PATH = '/home/pi/scanner3d/3DScanner/app/static/cam_imgs/'
 HIGHRES_IMAGE_PATH = '/home/pi/scanner3d/3DScanner/app/static/cam_imgs/highres/'
-
-DEFAULT_CAPTURE_PARAMETERS = {'PAUSE_TIME' : 1.0, #[s] Pause time between a movement of a motor and taking a picture
-                              'MOTOR_CAMERA_SPEED' : 10.0, #[mm/s]
-                              'MOTOR_CAMERA_STEP' : 20.0, #[mm]
-                              'MOTOR_TURNTABLE_SPEED' : 45.0, #[deg/s]
-                              'MOTOR_TURNTABLE_STEP' : 15.0, #[deg]
-                              'CAMERA_EXPOSURE' : 42.0, #[us]
-                              'CAMERA_RESOLUTION_HIGHRES' : (4608,2592), #[pixel]
-                              'CAMERA_RESOLUTION_PREVIEW' : (576, 324), #[pixel]
-                              'FLASH_ENABLED' : True,
-                              }
+CAPTURE_PARAMETERS_PATH = '/home/pi/scanner3d/3DScanner/app/backend/capture_parameter_sets/'
+DEFAULT_CAPTURE_PARAMETERS_PATH = CAPTURE_PARAMETERS_PATH + 'default.json'

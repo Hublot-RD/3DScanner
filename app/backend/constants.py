@@ -1,3 +1,4 @@
+# Physical constants
 LEDS_PINOUT = {'CAPTURE' : 5,
                'ERROR' : 3,
                }
@@ -18,25 +19,23 @@ MOTOR_CAMERA_PINOUT = {'STEP' : 33,
 
 SCREW_PITCH = 8/360 # [mm/°] Pitch of the screw used for the camera axis
 
-PAUSE_IMAGES_MOTOR = 1 # [s] Pause time between a movement of a motor and taking a picture
 
-CAMERA_MAX_SPEED = 42 #[cm/s]
-CAMERA_STEP_HEIGHT = 42 #[cm]
-
-TURNTABLE_MAX_SPEED = 42 #[deg/s]
-TURNTABLE_STEP_ANGLE = 42 #[deg]
-
-CAMERA_EXPOSURE = 42 #[us]
-
-FLASH_ON = True
-
+# Default fallback values
 INITIAL_STATUS = {'state': 'Idle',
                   'progress_value': 0,
                   'text_value': '',
                   }
 
-CAMERA_RESOLUTION_HIGHRES = (4608,2592)
-CAMERA_RESOLUTION_PREVIEW = (576, 324)
 PREVIEW_IMAGE_PATH = '/home/pi/scanner3d/3DScanner/app/static/cam_imgs/'
 HIGHRES_IMAGE_PATH = '/home/pi/scanner3d/3DScanner/app/static/cam_imgs/highres/'
 
+DEFAULT_CAPTURE_PARAMETERS = {'PAUSE_TIME' : 1.0, #[s] Pause time between a movement of a motor and taking a picture
+                              'MOTOR_CAMERA_SPEED' : 10.0, #[mm/s]
+                              'MOTOR_CAMERA_STEP' : 20.0, #[mm]
+                              'MOTOR_TURNTABLE_SPEED' : 45.0, #[deg/s]
+                              'MOTOR_TURNTABLE_STEP' : 15.0, #[deg]
+                              'CAMERA_EXPOSURE' : 42.0, #[us]
+                              'CAMERA_RESOLUTION_HIGHRES' : (4608,2592), #[pixel]
+                              'CAMERA_RESOLUTION_PREVIEW' : (576, 324), #[pixel]
+                              'FLASH_ENABLED' : True,
+                              }

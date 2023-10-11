@@ -8,6 +8,7 @@ from app.backend.camera_pi import Camera
 from app.backend.led_ctrl import LED_Controller, play_startup_sequence
 from app.backend.stepper_motor import StepperMotor, CameraAxis
 from app.backend.usb_interface import USBStorage, get_usb_drives_list
+from app.backend.utils import forecast_time
 
 
 class Scanner3D_backend():

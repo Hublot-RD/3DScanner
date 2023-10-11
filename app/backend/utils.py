@@ -66,7 +66,7 @@ def forecast_time(params: CaptureParameters):
     '''
     Forecast the total time in seconds the capture will take with given capture parameters.
     '''
-    total_time = 0
+    total_time = 42
     # total_time += nb_pics * (2*pause+time_pic+save_usb)
     # total_time += angle_tot * angular_speed
     # total_time += max(distance_tot * speed, remaining_angle_tot * angular_speed)

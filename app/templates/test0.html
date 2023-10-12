@@ -17,13 +17,8 @@
     <!-- OPTIONS -->
     <div class="standard-options-container">
         <div class="option-container">
-            <div class="slider-title">Hauteur de l'objet : <span id="objectHeightText">20cm</span></div>
-            <input type="range" min="0" max="45" value="20" class="slider" id="objectHeightSlider">
-        </div>
-        
-        <div class="option-container">
-            <div class="slider-title">Niveau de détails de l'objet : <span id="objectDetailText">moyen</span></div>
-            <input type="range" min="0" max="2" value="1" class="slider" id="objectDetailSlider">
+            <div class="slider-title">Hauteur de l'objet : <span id="objectHeightText">200mm</span></div>
+            <input type="range" min="0" max="450" value="200" class="slider" id="objectHeightSlider">
         </div>
         
         <div class="option-container">
@@ -46,23 +41,54 @@
     <br>
 
     <div id="moreOptionContainer" style="display:none">
-        <p>Vitesse max de rotation de l'objet : <span id="maxRotationText">360°/s</span></p>
-        <input type="range" min="1" max="3600" value="360" class="slider" id="maxRotationSlider">
-        <p>Angle d'un pas de l'objet : <span id="stepAngleText">5°</span></p>
-        <input type="range" min="1" max="45" value="5" class="slider" id="stepAngleSlider">
-    
-        <p>Vitesse max de translation de la camera : <span id="maxTranslationText">10cm/s</span></p>
-        <input type="range" min="1" max="20" value="10" class="slider" id="maxTranslationSlider">
-        <p>Hauteur d'un pas de la camera : <span id="stepTranslationText">5cm</span></p>
-        <input type="range" min="1" max="10" value="5" class="slider" id="stepTranslationSlider">
+        <p>
+            Vitesse de rotation de l'objet : [°/s]
+            <select id="speedRotationDropdown">
+                <option value=10>10</option>
+                <option value=30>30</option>
+                <option value=60>60</option>
+                <option value=120>120</option>
+                <option value=360>360</option>
+            </select>
+            Angle d'un pas de l'objet : [°]
+            <select id="stepRotationDropdown">
+                <option value=5>5</option>
+                <option value=10>10</option>
+                <option value=15>15</option>
+                <option value=30>30</option>
+                <option value=90>90</option>
+            </select>
+        </p>
+        <p>
+            Vitesse de translation de la camera : [mm/s]
+            <select id="speedTranslationDropdown">
+                <option value=10>10</option>
+                <option value=20>20</option>
+                <option value=30>30</option>
+                <option value=40>40</option>
+                <option value=50>50</option>
+                <option value=100>100</option>
+                <option value=100>200</option>
+                
+            </select>
+            Hauteur d'un pas de la camera : [mm]
+            <select id="stepTranslationDropdown">
+                <option value=10>10</option>
+                <option value=25>25</option>
+                <option value=50>50</option>
+                <option value=75>75</option>
+                <option value=100>100</option>
+            </select>
+        </p>
+
         
         <div>
             Temps d'exposition de la camera : <span id="exposureText">5us</span>
             <input type="range" min="1" max="10" value="5" class="slider" id="exposureSlider">
         </div>
     
-        <input type="checkbox" id="lightToggleButton" checked>
-        <label for="checkbox">Activer les lumières</label>
+        <input type="checkbox" id="flashCheckbox" checked>
+        <label for="checkbox">Utiliser le flash</label>
 
     </div>
     <br>

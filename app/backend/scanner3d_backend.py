@@ -8,7 +8,7 @@ from app.backend.camera_pi import Camera
 from app.backend.led_ctrl import LED_Controller, play_startup_sequence
 from app.backend.stepper_motor import StepperMotor, CameraAxis
 from app.backend.usb_interface import USBStorage, get_usb_drives_list
-from app.backend.utils import forecast_time
+from app.backend.utils import forecast_time, CaptureParameters
 
 
 class Scanner3D_backend():
@@ -46,31 +46,27 @@ class Scanner3D_backend():
         # Start capture if not already capturing
         if not self._main_thd_obj.is_alive():
             # Save capture parameters
-            self._obj_height = float(capture_params['height'])
-            self._obj_detail = capture_params['detail']
-            self._obj_name = capture_params['obj_name']
-
-            print('Object name:', self._obj_name)
-            print('Object height:', self._obj_height)
-            print('Object details level:', self._obj_detail)
+            self._p = CaptureParameters(capture_params)
+            print(self._p)
 
             # Create USB storage object
-            if capture_params['usb_storage_loc'] == 'Aucun':
+            if self._p.usb_storage_loc == 'Aucun':
                 self._usb_storage = None
             else:
-                self._usb_storage = USBStorage(name=capture_params['usb_storage_loc'])
+                self._usb_storage = USBStorage(name=self._p.usb_storage_loc)
 
             # Start the camera
-            self._cam = Camera(object_name=self._obj_name, usb_storage=self._usb_storage)
+            self._cam = Camera(object_name=self._p.obj_name, usb_storage=self._usb_storage)
 
             # Start main thread
             self._main_thd_stop.clear()
-            self._main_thread_obj = Thread(target=self._main_thd_target)
-            self._main_thread_obj.start()
+            self._main_thd_obj = Thread(target=self._main_thd_target)
+            self._main_thd_obj.start()
 
     def stop(self) -> None:
         # Stop process
         self._main_thd_stop.set()
+        self._main_thd_obj.join()
         
         self._status = cst.INITIAL_STATUS
         self._led_capture.set_state(on=False)
@@ -97,16 +93,18 @@ class Scanner3D_backend():
     #     return cst.HIGHRES_IMAGE_PATH
     
     def _main_thd_target(self) -> None:
-        print('\nCapture started')     
-
         # Start blink capture LED
         self._led_capture.start_flicker()
 
         # Home the z axis
         # self._mot_camera.home()
 
+        # Apply motor speeds
+        self._mot_camera.set_speed(self._p.motor_camera_speed)
+        self._mot_turntable.set_speed(self._p.motor_turntable_speed)
+
         # Take pictures of the object
-        self._capture_whole_object(height_increment=42, rotation_increment=350)
+        self._capture_whole_object()
 
         if not self._main_thd_stop.is_set(): # Successful finish
             # Umount usb storage
@@ -115,7 +113,7 @@ class Scanner3D_backend():
 
             # Stop blink capture LED, ON continuous
             self._led_capture.stop_flicker()
-            sleep(cst.PAUSE_IMAGES_MOTOR)
+            sleep(self._p.pause_time)
             self._led_capture.set_state(on=True)
         else:
             # Stop blink capture LED, OFF continuous
@@ -129,40 +127,42 @@ class Scanner3D_backend():
         self._status = {k: info[k] if k in info else v for k, v in self._status.items()}
         self._status_queue.put(self._status)
 
-    def _capture360deg(self, rotation_increment: float) -> float:
+    def _capture360deg(self) -> float:
         remaining_angle = 360.0
-        # print('remaining_angle', remaining_angle)
-        while (remaining_angle >= rotation_increment) and (not self._main_thd_stop.is_set()):
+        while (remaining_angle >= self._p.motor_turntable_step) and (not self._main_thd_stop.is_set()):
             # Capture image with flash
-            self._led_flash.set_state(True)
+            if self._p.flash_enabled:
+                self._led_flash.set_state(True)
             self._cam.capture_highres()
-            self._led_flash.set_state(False)
+            if self._p.flash_enabled:
+                self._led_flash.set_state(False)
 
             # Move turntable
-            sleep(cst.PAUSE_IMAGES_MOTOR)
-            self._mot_turntable.rotate(rotation_increment)
-            remaining_angle -= rotation_increment
-            # print('remaining_angle', remaining_angle)
-            sleep(cst.PAUSE_IMAGES_MOTOR)
+            sleep(self._p.pause_time)
+            self._mot_turntable.rotate(self._p.motor_turntable_step)
+            remaining_angle -= self._p.motor_turntable_step
+            sleep(self._p.pause_time)
         
         # Capture last image
         if not self._main_thd_stop.is_set():
-            self._led_flash.set_state(True)
+            if self._p.flash_enabled:
+                self._led_flash.set_state(True)
             self._cam.capture_highres()
-            self._led_flash.set_state(False)
-            sleep(cst.PAUSE_IMAGES_MOTOR)
+            if self._p.flash_enabled:
+                self._led_flash.set_state(False)
+            sleep(self._p.pause_time)
 
         return remaining_angle
     
-    def _capture_whole_object(self, height_increment: float, rotation_increment: float) -> None:
-        remaining_height = 10*self._obj_height # cm to mm
-        while remaining_height > 0:
+    def _capture_whole_object(self) -> None:
+        remaining_height = self._p.obj_height
+        while (remaining_height > 0) and (not self._main_thd_stop.is_set()):
             # Take pictures all around object
-            remaining_angle = self._capture360deg(rotation_increment=rotation_increment)
+            remaining_angle = self._capture360deg()
             
             if not self._main_thd_stop.is_set():
                 # Move camera up and turntable to initial position
-                height_up = min(height_increment, remaining_height)
+                height_up = min(self._p.motor_camera_step, remaining_height)
                 self._mot_camera.set_target_position(distance=height_up)
                 self._mot_turntable.set_target_position(angle=remaining_angle)
                 remaining_height -= height_up
@@ -170,11 +170,11 @@ class Scanner3D_backend():
                 # Wait for this height to be finished
                 while self._mot_camera.is_busy or self._mot_turntable.is_busy:
                     sleep(0.1)
-                sleep(cst.PAUSE_IMAGES_MOTOR)
+                sleep(self._p.pause_time)
         
         # Capture last height
         if not self._main_thd_stop.is_set():
-            remaining_angle = self._capture360deg(rotation_increment=rotation_increment)
+            remaining_angle = self._capture360deg()
             self._mot_turntable.set_target_position(angle=remaining_angle)
         
 

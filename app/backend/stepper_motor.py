@@ -171,6 +171,7 @@ class CameraAxis(StepperMotor):
     def home(self) -> None:
         # go down "fast"
         print('go down "fast"')
+        self.set_speed(30)
         self.set_target_position(-1000)
 
         # wait for self.at_home

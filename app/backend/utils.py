@@ -51,14 +51,14 @@ class CaptureParameters():
 
         # Camera parameters
         self.camera_exposure = self._get_from_dict(params, 'CAMERA_EXPOSURE', float)
-        self.camera_resolution_highres = self._get_from_dict(params, 'CAMERA_RESOLUTION_HIGHRES', tuple)
-        self.camera_resolution_preview = self._get_from_dict(params, 'CAMERA_RESOLUTION_PREVIEW', tuple)
         self.flash_enabled = self._get_from_dict(params, 'FLASH_ENABLED', bool)
 
         # Object parameters
-        self.obj_height = 10*self._get_from_dict(params, 'OBJ_HEIGHT', float) # cm to mm
-        self.obj_detail = self._get_from_dict(params, 'OBJ_DETAIL', int)
+        self.obj_height = self._get_from_dict(params, 'OBJ_HEIGHT', float)
         self.obj_name = self._get_from_dict(params, 'OBJ_NAME', str)
+
+        # Other parameters
+        self.usb_storage_loc = self._get_from_dict(params, 'USB_STORAGE_LOC', str)
 
     
     def set_from_file(self, filename: str):

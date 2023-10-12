@@ -25,6 +25,8 @@ INITIAL_STATUS = {'state': 'Idle',
                   'progress_value': 0,
                   'text_value': '',
                   }
+CAMERA_RESOLUTION_HIGHRES = (4608, 2592)
+CAMERA_RESOLUTION_PREVIEW = (576, 324)
 
 PREVIEW_IMAGE_PATH = '/home/pi/scanner3d/3DScanner/app/static/cam_imgs/'
 HIGHRES_IMAGE_PATH = '/home/pi/scanner3d/3DScanner/app/static/cam_imgs/highres/'

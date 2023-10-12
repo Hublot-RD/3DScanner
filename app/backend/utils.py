@@ -4,6 +4,7 @@ except:
     from constants import CAPTURE_PARAMETERS_PATH, DEFAULT_CAPTURE_PARAMETERS_PATH
 from warnings import warn
 import json
+from math import ceil, floor
 
 class CaptureParameters():
     def __init__(self, params: dict = None) -> None:
@@ -53,6 +54,12 @@ class CaptureParameters():
         self.camera_resolution_highres = self._get_from_dict(params, 'CAMERA_RESOLUTION_HIGHRES', tuple)
         self.camera_resolution_preview = self._get_from_dict(params, 'CAMERA_RESOLUTION_PREVIEW', tuple)
         self.flash_enabled = self._get_from_dict(params, 'FLASH_ENABLED', bool)
+
+        # Object parameters
+        self.obj_height = 10*self._get_from_dict(params, 'OBJ_HEIGHT', float) # cm to mm
+        self.obj_detail = self._get_from_dict(params, 'OBJ_DETAIL', int)
+        self.obj_name = self._get_from_dict(params, 'OBJ_NAME', str)
+
     
     def set_from_file(self, filename: str):
         p = self._load_parameters(CAPTURE_PARAMETERS_PATH+filename+'.json')
@@ -66,19 +73,32 @@ def forecast_time(params: CaptureParameters):
     '''
     Forecast the total time in seconds the capture will take with given capture parameters.
     '''
-    total_time = 42
-    # total_time += nb_pics * (2*pause+time_pic+save_usb)
-    # total_time += angle_tot * angular_speed
-    # total_time += max(distance_tot * speed, remaining_angle_tot * angular_speed)
-    # total_time += time_startup
-    # total_time += time_closing
+    total_time = 0
+    one_picture_time = params.camera_exposure/1000*4 # 4 has to be tuned
+    save_usb_time = 0.1 # second (has to be tuned)
+    time_startup = 1
+    time_closing = 1
+
+    nb_layers = ceil(params.obj_height / params.motor_camera_step)
+    nb_img_per_layer = floor(360/params.motor_turntable_step)
+    remaining_angle_tot = nb_layers * (360 % params.motor_turntable_step)
+    nb_pics = nb_img_per_layer * nb_layers
+
+
+    total_time += nb_pics * (2*params.pause_time+one_picture_time+save_usb_time)
+    total_time += nb_img_per_layer * params.motor_turntable_step / params.motor_turntable_speed
+    total_time += max(params.obj_height / params.motor_camera_speed,
+                      remaining_angle_tot / params.motor_turntable_speed)
+    total_time += time_startup
+    total_time += time_closing
     return total_time
 
 
 if __name__ == '__main__':
-    p = CaptureParameters(params={'PAUSE_TIME': 10.0})
+    p = CaptureParameters(params={'PAUSE_TIME': 1.0})
     print(p)
     # p.load_parameters(DEFAULT_CAPTURE_PARAMETERS_PATH)
     p.save('test')
     p.set_from_file('test')
     print(p)
+    print('Capture estimated time [s]:', forecast_time(p))

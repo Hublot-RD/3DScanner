@@ -93,6 +93,14 @@ def forecast_time(params: CaptureParameters):
     total_time += time_closing
     return total_time, nb_pics
 
+def s2time(seconds: float) -> str:
+    m = str(int(seconds // 60))
+    s = str(int(seconds % 60))
+    if len(s) <= 1:
+        s = '0' + s
+    return  m + 'm ' + s + 's'
+
+
 
 if __name__ == '__main__':
     p = CaptureParameters(params={'PAUSE_TIME': 1.0})

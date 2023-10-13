@@ -24,6 +24,7 @@ SCREW_PITCH = 8/360 # [mm/°] Pitch of the screw used for the camera axis
 INITIAL_STATUS = {'state': 'Idle',
                   'progress_value': 0,
                   'text_value': '',
+                  'time_value': '00m 00s'
                   }
 CAMERA_RESOLUTION_HIGHRES = (4608, 2592)
 CAMERA_RESOLUTION_PREVIEW = (576, 324)

@@ -8,7 +8,7 @@ from app.backend.camera_pi import Camera
 from app.backend.led_ctrl import LED_Controller, play_startup_sequence
 from app.backend.stepper_motor import StepperMotor, CameraAxis
 from app.backend.usb_interface import USBStorage, get_usb_drives_list
-from app.backend.utils import forecast_time, CaptureParameters
+from app.backend.utils import forecast_time, CaptureParameters, s2time
 
 
 class Scanner3D_backend():
@@ -51,6 +51,8 @@ class Scanner3D_backend():
 
             # Forecast capture time and number of images
             self._total_time, self._total_pics = forecast_time(self._p)
+            print(s2time(self._total_time), type(s2time(self._total_time)))
+            self._update_status({'time_value' : s2time(self._total_time)})
 
             # Create USB storage object
             if self._p.usb_storage_loc == 'Aucun':

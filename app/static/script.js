@@ -31,9 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var stopButton = document.getElementById('stopButton');
     // Progress
     var progressContainer = document.getElementById('progressContainer');
-    // var progressText = document.getElementById('progressText');
-    // var progressBar = document.getElementById('progressBar');
-    // var progressBarIndicator = document.getElementById('progressBarIndicator');
+    var progressText = document.getElementById('progressText');
+    var progressBar = document.getElementById('progressBar');
+    var progressBarIndicator = document.getElementById('progressBarIndicator');
+    var forecastedTime = document.getElementById('forecastedTime');
 
     // Update functions
     function updateImageCamera(filename) {
@@ -93,6 +94,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             progressText.innerHTML = 'Démarrage de la capture ...';
         }
+    }
+
+    function updateProgressTime(value) {
+        forecastedTime.innerHTML = String(value);
     }
     
     // Event listners
@@ -175,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('update_progress', function(data) {
         updateProgressBar(data.progress_value);
         updateProgressText(data.text_value);
+        updateProgressTime(data.time_value);
     });
 
     socket.on('update_image', function(data) {

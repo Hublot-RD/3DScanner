@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // show new elements to web page
         goButton.disabled = true;
+        refreshImageCameraButton.disabled = true
         stopButton.style.display = 'inline';
         progressContainer.style.display = 'inline';
     });
@@ -154,6 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // hide elements from page
         goButton.disabled = false;
+        refreshImageCameraButton.disabled = false
         stopButton.style.display = 'none';
         progressContainer.style.display = 'none';
         

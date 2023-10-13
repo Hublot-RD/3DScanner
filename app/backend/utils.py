@@ -79,7 +79,7 @@ def forecast_time(params: CaptureParameters):
     time_startup = 1
     time_closing = 1
 
-    nb_layers = ceil(params.obj_height / params.motor_camera_step)
+    nb_layers = 1 + ceil(params.obj_height / params.motor_camera_step)
     nb_img_per_layer = floor(360/params.motor_turntable_step)
     remaining_angle_tot = nb_layers * (360 % params.motor_turntable_step)
     nb_pics = nb_img_per_layer * nb_layers
@@ -91,7 +91,7 @@ def forecast_time(params: CaptureParameters):
                       remaining_angle_tot / params.motor_turntable_speed)
     total_time += time_startup
     total_time += time_closing
-    return total_time
+    return total_time, nb_pics
 
 
 if __name__ == '__main__':

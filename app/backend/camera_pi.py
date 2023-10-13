@@ -16,7 +16,7 @@ class Camera():
     def __init__(self, object_name: str, usb_storage: USBStorage) -> None:
         self._cam = Picamera2()
         self._preview_mode = True
-        self._highres_img_cnt = 0
+        self.highres_img_cnt = 1
         self._previous_preview_path = None
         self._usb_storage = usb_storage
         self._object_name = object_name
@@ -38,8 +38,8 @@ class Camera():
         Captures a high resolution image and saves it both on the RPi and the USB storage.
         '''
         self._set_preview_mode(False)
-        name = self._object_name + '_{0:03}.jpg'.format(self._highres_img_cnt)
-        self._highres_img_cnt += 1
+        name = self._object_name + '_{0:03}.jpg'.format(self.highres_img_cnt)
+        self.highres_img_cnt += 1
         path = HIGHRES_IMAGE_PATH + self._object_name + '/' 
         if not isdir(path):
             mkdir(path)
@@ -61,7 +61,7 @@ class Camera():
         return metadata
     
     def reset(self) -> None:
-        self._highres_img_cnt = 0
+        self.highres_img_cnt = 1
         self._set_preview_mode(True)
     
     def _set_preview_mode(self, preview_ON: bool) -> None:

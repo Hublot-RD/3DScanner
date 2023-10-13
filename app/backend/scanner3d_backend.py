@@ -49,6 +49,9 @@ class Scanner3D_backend():
             self._p = CaptureParameters(capture_params)
             print(self._p)
 
+            # Forecast capture time and number of images
+            self._total_time, self._total_pics = forecast_time(self._p)
+
             # Create USB storage object
             if self._p.usb_storage_loc == 'Aucun':
                 self._usb_storage = None
@@ -69,10 +72,12 @@ class Scanner3D_backend():
         self._main_thd_obj.join()
         
         self._status = cst.INITIAL_STATUS
+        self._update_status(self._status)
         self._led_capture.set_state(on=False)
         self._led_error.set_state(on=False) # DO I REALLY WANT TO RESET ERROR ?
         self._led_flash.set_state(on=False)
         del(self._cam)
+        print('Capture stopped properly')
     
     def refresh_image(self) -> str:
         name = 'preview_' + str(random()).split('.')[-1]
@@ -104,21 +109,26 @@ class Scanner3D_backend():
         self._mot_turntable.set_speed(self._p.motor_turntable_speed)
 
         # Take pictures of the object
+        self._update_status(info={'text_value' : 'Start movement sequence'})
         self._capture_whole_object()
 
         if not self._main_thd_stop.is_set(): # Successful finish
             # Umount usb storage
+            self._update_status(info={'text_value' : 'Umount USB storage'})
             if self._usb_storage is not None:
                 self._usb_storage.umount()
+
 
             # Stop blink capture LED, ON continuous
             self._led_capture.stop_flicker()
             sleep(self._p.pause_time)
+            self._update_status(info={'text_value' : 'Capture finished successfully', 'progress_value' : 100})
             self._led_capture.set_state(on=True)
         else:
             # Stop blink capture LED, OFF continuous
             self._led_capture.stop_flicker()
             self._led_capture.set_state(on=False)
+            self._update_status(info={'text_value' : 'Capture stopped early'})
 
         # Exit properly
         print('_main_thd closed')
@@ -129,8 +139,9 @@ class Scanner3D_backend():
 
     def _capture360deg(self) -> float:
         remaining_angle = 360.0
-        while (remaining_angle >= self._p.motor_turntable_step) and (not self._main_thd_stop.is_set()):
+        while (remaining_angle > self._p.motor_turntable_step) and (not self._main_thd_stop.is_set()):
             # Capture image with flash
+            self._update_status(info={'text_value' : f'Capture image {self._cam.highres_img_cnt}/{self._total_pics}'})
             if self._p.flash_enabled:
                 self._led_flash.set_state(True)
             self._cam.capture_highres()
@@ -139,12 +150,14 @@ class Scanner3D_backend():
 
             # Move turntable
             sleep(self._p.pause_time)
+            self._update_status({'progress_value' : 100*(self._cam.highres_img_cnt-1)/self._total_pics})
             self._mot_turntable.rotate(self._p.motor_turntable_step)
             remaining_angle -= self._p.motor_turntable_step
             sleep(self._p.pause_time)
         
         # Capture last image
         if not self._main_thd_stop.is_set():
+            self._update_status(info={'text_value' : f'Capture image {self._cam.highres_img_cnt}/{self._total_pics}'})
             if self._p.flash_enabled:
                 self._led_flash.set_state(True)
             self._cam.capture_highres()
@@ -162,6 +175,7 @@ class Scanner3D_backend():
             
             if not self._main_thd_stop.is_set():
                 # Move camera up and turntable to initial position
+                self._update_status(info={'state' : 'Move to next height'})
                 height_up = min(self._p.motor_camera_step, remaining_height)
                 self._mot_camera.set_target_position(distance=height_up)
                 self._mot_turntable.set_target_position(angle=remaining_angle)

@@ -16,10 +16,9 @@ status_updator_thd_stop = Event()
 
 def status_updator_thd_target(stop_event: Event()) -> None:
     while not stop_event.is_set():
-        if status_queue.not_empty:
+        if not status_queue.empty():
             status = status_queue.get()
             socketio.emit('update_progress', status)
-
         time.sleep(0.1)
     
     # Closing thread properly
@@ -58,7 +57,6 @@ def handle_start_capture(data):
 @socketio.on('stop_capture')
 def handle_stop_capture():
     print('stop_capture received')
-
     # Stop backend
     backend.stop()
 

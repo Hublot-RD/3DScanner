@@ -21,7 +21,7 @@ SCREW_PITCH = 8/360 # [mm/°] Pitch of the screw used for the camera axis
 
 
 # Default fallback values
-INITIAL_STATUS = {'state': 'Idle',
+INITIAL_STATUS = {'state': 'ready',
                   'progress_value': 0,
                   'text_value': '',
                   'time_value': '00m 00s'

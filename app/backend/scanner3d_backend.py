@@ -100,40 +100,55 @@ class Scanner3D_backend():
     #     return cst.HIGHRES_IMAGE_PATH
     
     def _main_thd_target(self) -> None:
-        # Start blink capture LED
-        self._led_capture.start_flicker()
+        try:
+            # Start blink capture LED
+            self._led_capture.start_flicker()
+            self._update_status({'state' : 'capture'})
 
-        # Home the z axis
-        # self._mot_camera.home()
+            # Home the z axis
+            # self._mot_camera.home()
 
-        # Apply motor speeds
-        self._mot_camera.set_speed(self._p.motor_camera_speed)
-        self._mot_turntable.set_speed(self._p.motor_turntable_speed)
+            # Apply motor speeds
+            self._mot_camera.set_speed(self._p.motor_camera_speed)
+            self._mot_turntable.set_speed(self._p.motor_turntable_speed)
 
-        # Take pictures of the object
-        self._update_status(info={'text_value' : 'Start movement sequence'})
-        self._capture_whole_object()
+            # Take pictures of the object
+            self._update_status(info={'text_value' : 'Démarrage de la séquence'})
+            self._capture_whole_object()
 
-        if not self._main_thd_stop.is_set(): # Successful finish
-            # Umount usb storage
-            self._update_status(info={'text_value' : 'Umount USB storage'})
-            if self._usb_storage is not None:
-                self._usb_storage.umount()
-
-
-            # Stop blink capture LED, ON continuous
-            self._led_capture.stop_flicker()
-            sleep(self._p.pause_time)
-            self._update_status(info={'text_value' : 'Capture finished successfully', 'progress_value' : 100})
-            self._led_capture.set_state(on=True)
-        else:
-            # Stop blink capture LED, OFF continuous
+        except Exception as e:
+            print('error detected')
             self._led_capture.stop_flicker()
             self._led_capture.set_state(on=False)
-            self._update_status(info={'text_value' : 'Capture stopped early'})
+            self._led_error.set_state(True)
+            self._update_status(info={'text_value' : 'Une erreur est survenue: ' + str(e),
+                                      'state' : 'error'})
 
-        # Exit properly
-        print('_main_thd closed')
+        else:
+            if not self._main_thd_stop.is_set(): # Successful finish
+                # Unmount usb storage
+                self._update_status(info={'text_value' : 'Ejection du stockage USB'})
+                if self._usb_storage is not None:
+                    self._usb_storage.umount()
+
+
+                # Stop blink capture LED, ON continuous
+                self._led_capture.stop_flicker()
+                sleep(self._p.pause_time)
+                self._update_status(info={'text_value' : 'Capture terminée avec succès', 
+                                          'progress_value' : 100,
+                                          'state' : 'ready'})
+                self._led_capture.set_state(on=True)
+            else:
+                # Stop blink capture LED, OFF continuous
+                self._led_capture.stop_flicker()
+                self._led_capture.set_state(on=False)
+                self._update_status(info={'text_value' : 'Capture interrompue',
+                                          'state' : 'end'})
+        finally:
+            # Exit properly
+            print('_main_thd closed')
+
 
     def _update_status(self, info: dict) -> None:
         self._status = {k: info[k] if k in info else v for k, v in self._status.items()}
@@ -143,7 +158,7 @@ class Scanner3D_backend():
         remaining_angle = 360.0
         while (remaining_angle > self._p.motor_turntable_step) and (not self._main_thd_stop.is_set()):
             # Capture image with flash
-            self._update_status(info={'text_value' : f'Capture image {self._cam.highres_img_cnt}/{self._total_pics}'})
+            self._update_status(info={'text_value' : f'Capture de l\'image {self._cam.highres_img_cnt}/{self._total_pics}'})
             if self._p.flash_enabled:
                 self._led_flash.set_state(True)
             self._cam.capture_highres()
@@ -159,7 +174,7 @@ class Scanner3D_backend():
         
         # Capture last image
         if not self._main_thd_stop.is_set():
-            self._update_status(info={'text_value' : f'Capture image {self._cam.highres_img_cnt}/{self._total_pics}'})
+            self._update_status(info={'text_value' : f'Capture de l\'image {self._cam.highres_img_cnt}/{self._total_pics}'})
             if self._p.flash_enabled:
                 self._led_flash.set_state(True)
             self._cam.capture_highres()

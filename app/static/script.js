@@ -29,12 +29,47 @@ document.addEventListener('DOMContentLoaded', function() {
     var goButton = document.getElementById('goButton');
     // Stop
     var stopButton = document.getElementById('stopButton');
+    // Status
+    var statusCircle = document.getElementById('statusCircle');
+    var stateScanner = 'ready';
     // Progress
     var progressContainer = document.getElementById('progressContainer');
     var progressText = document.getElementById('progressText');
     var progressBar = document.getElementById('progressBar');
     var progressBarIndicator = document.getElementById('progressBarIndicator');
     var forecastedTime = document.getElementById('forecastedTime');
+
+    // Blink functions for LEDs
+    function statusCircleBlinkError() {
+        if (stateScanner == 'error') {
+            var currentColor = statusCircle.style.backgroundColor;
+            statusCircle.style.backgroundColor = (currentColor === 'red') ? 'darkred' : 'red';
+        }
+    }
+
+    function statusCircleBlinkCapture() {
+        if (stateScanner == 'capture') {
+            var currentColor = statusCircle.style.backgroundColor;
+            statusCircle.style.backgroundColor = (currentColor === 'greenyellow') ? 'green' : 'greenyellow';
+        }
+    }
+
+    function statusCircleEnd() {
+        if (stateScanner == 'end') {
+            statusCircle.style.backgroundColor = 'greenyellow';
+        }
+    }
+
+    function statusCircleReady() {
+        if (stateScanner == 'ready') {
+            statusCircle.style.backgroundColor = 'green';
+        }
+    }
+
+    setInterval(statusCircleBlinkError, 200);
+    setInterval(statusCircleBlinkCapture, 100);
+    setInterval(statusCircleEnd, 1000);
+    setInterval(statusCircleReady, 1000);
 
     // Update functions
     function updateImageCamera(filename) {
@@ -181,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateProgressBar(data.progress_value);
         updateProgressText(data.text_value);
         updateProgressTime(data.time_value);
+        stateScanner = String(data.state);
     });
 
     socket.on('update_image', function(data) {

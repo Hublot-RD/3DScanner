@@ -26,8 +26,15 @@ def status_updator_thd_target(stop_event: Event()) -> None:
 
 @app.route('/')
 def index():
+    # Activate status update
+    global status_updator_thd_obj
+    if not status_updator_thd_obj.is_alive():
+        status_updator_thd_stop.clear()
+        status_updator_thd_obj = Thread(target=status_updator_thd_target, kwargs={'stop_event': status_updator_thd_stop})
+        status_updator_thd_obj.start()
     # Serve the HTML page
     return render_template(HOMEPAGE_TEMPLATE)
+
 
 @app.route('/cam_imgs/<filename>')
 def serve_image(filename):
@@ -47,25 +54,11 @@ def handle_refresh_preview():
 def handle_start_capture(data):
     backend.start(capture_params=data)
 
-    # Activate status update
-    global status_updator_thd_obj
-    if not status_updator_thd_obj.is_alive():
-        status_updator_thd_stop.clear()
-        status_updator_thd_obj = Thread(target=status_updator_thd_target, kwargs={'stop_event': status_updator_thd_stop})
-        status_updator_thd_obj.start()
-
 @socketio.on('stop_capture')
 def handle_stop_capture():
     print('stop_capture received')
     # Stop backend
     backend.stop()
 
-    # Stop status update
-    status_updator_thd_stop.set()
-
-@socketio.on('light_toggled')
-def handle_light_toggled(data):
-    if data:
-        print('Light turned ON')
-    else:
-        print('Light turned OFF')
+    # # Stop status update
+    # status_updator_thd_stop.set()

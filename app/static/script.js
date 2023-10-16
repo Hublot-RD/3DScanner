@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateProgressBar(value) {
-        var bounded_value = Math.max(0, Math.min(100, value));
+        var bounded_value = Math.max(0, Math.min(100, value)).toFixed(2);
         progressBar.value = bounded_value;
         progressBarIndicator.innerHTML = String(bounded_value) + '%';
     }

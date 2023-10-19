@@ -147,7 +147,7 @@ class CameraAxis(StepperMotor):
 
         # Create interrupt for the homing sensor
         GPIO.setwarnings(False)
-        GPIO.setup(pinout['HOMING_SWITCH_PIN'], GPIO.IN)
+        GPIO.setup(pinout['HOMING_SWITCH_PIN'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setwarnings(True)
         GPIO.add_event_detect(pinout['HOMING_SWITCH_PIN'], GPIO.FALLING, callback=self._homing_switch_triggered, bouncetime=200)
         self.at_home = False
@@ -169,41 +169,37 @@ class CameraAxis(StepperMotor):
             self.is_busy = True
 
     def home(self) -> None:
-        # go down "fast"
-        print('go down "fast"')
+        # go up 20 mm (to avoid problems if already at home)
         self.set_speed(30)
-        self.set_target_position(-1000)
+        self.set_target_position(20)
+        while self.is_busy:
+            time.sleep(0.1)
+        self.at_home = False
 
-        # wait for self.at_home
+        # go down "fast" until home
+        self.set_target_position(-1000)
         while not self.at_home:
-            print('waiting for at_home')
             time.sleep(0.1)
 
         # go up 10 mm
-        print('go up 10 mm')
-        self.set_target_position(10)
-        self.at_home = False
-
+        self.set_target_position(5)
         while self.is_busy:
-            print('waiting for is_busy')
             time.sleep(0.1)
         
-        # go down slow
-        print('go down slow')
+        # go down slow until home
+        self.at_home = False
         self.set_speed(2)
         self.set_target_position(-20)
-
-        # wait for self.at_home
         while not self.at_home:
-            print('waiting for at_home')
             time.sleep(0.1)
 
         # stop motor (and save position as home ?)
         self.set_target_position(0)
         self.at_home = False
-        print('homing finished')
+        print('Homing finished')
 
-    def _homing_switch_triggered(self):
+    def _homing_switch_triggered(self, pin):
+
         self.at_home = True
 
 
@@ -257,6 +253,8 @@ if __name__ == '__main__':
         continue
     
     print('Done !')
+    print('Homing ...')
+    stepper_cam.home()
     
 
     exit()

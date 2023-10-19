@@ -106,7 +106,8 @@ class Scanner3D_backend():
             self._update_status({'state' : 'capture'})
 
             # Home the z axis
-            # self._mot_camera.home()
+            self._mot_camera.home()
+            self._update_status({'text_value' : 'Calibration de l\'axe'})
 
             # Apply motor speeds
             self._mot_camera.set_speed(self._p.motor_camera_speed)

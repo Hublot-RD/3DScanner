@@ -138,7 +138,7 @@ class Scanner3D_backend():
                 sleep(self._p.pause_time)
                 self._update_status(info={'text_value' : 'Capture terminée avec succès', 
                                           'progress_value' : 100,
-                                          'state' : 'ready'})
+                                          'state' : 'end'})
                 self._led_capture.set_state(on=True)
             else:
                 # Stop blink capture LED, OFF continuous

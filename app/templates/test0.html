@@ -99,7 +99,7 @@
     <button id="goButton">Démarrer la capture</button>
     <button id="stopButton" style="display:none">Arrêter la capture</button>
     <br>
-
+    
     <!-- PROGRESS -->
     <div id="progressContainer" style="display:none">
         <p>Temps total estimé : <span id="forecastedTime">00m00s</span></p>
@@ -107,7 +107,9 @@
         <progress id="progressBar" max="100"></progress>
         <label for="progressBar"><span id="progressBarIndicator">0 %</span></label>
     </div>
-
+    <button id="okButton" style="display:none">OK</button>
+    <br>
+    
 
     <script src="{{ url_for('static', filename='socket.io.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

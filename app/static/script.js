@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var stepTranslationDropdown = document.getElementById('stepTranslationDropdown');
     // var exposureSlider = document.getElementById('exposureSlider')
     var flashCheckbox = document.getElementById('flashCheckbox');
-    // Go
+    // Go, Stop, OK
     var goButton = document.getElementById('goButton');
-    // Stop
     var stopButton = document.getElementById('stopButton');
+    var okButton = document.getElementById('okButton');
     // Status
     var statusCircle = document.getElementById('statusCircle');
     var stateScanner = 'ready';
@@ -204,6 +204,14 @@ document.addEventListener('DOMContentLoaded', function() {
         updateProgressText();
     });
 
+    okButton.addEventListener('click', function() {
+        socket.emit('ok_capture');
+        okButton.style.display = 'none';
+        goButton.disabled = false;
+        refreshImageCameraButton.disabled = false
+        progressContainer.style.display = 'none';
+    });
+
     usbDeviceDropdown.addEventListener('click', function() {
         socket.emit('refresh_usb_list')
     });
@@ -217,6 +225,14 @@ document.addEventListener('DOMContentLoaded', function() {
         updateProgressText(data.text_value);
         updateProgressTime(data.time_value);
         stateScanner = String(data.state);
+        if (data.state == 'end') {
+            // Hide progress bar, indicator, stop button
+            progressBar.style.display = 'none';
+            progressBarIndicator.style.display = 'none';
+            stopButton.style.display = 'none';
+            // Show OK button
+            okButton.style.display = 'inline';
+        }
     });
 
     socket.on('update_image', function(data) {

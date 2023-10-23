@@ -60,5 +60,8 @@ def handle_stop_capture():
     # Stop backend
     backend.stop()
 
-    # # Stop status update
-    # status_updator_thd_stop.set()
+@socketio.on('ok_capture')
+def handle_ok_capture():
+    print('ok_capture received')
+    # Stop backend
+    backend.stop()

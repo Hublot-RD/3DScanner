@@ -3,6 +3,9 @@ from shutil import move, copy2
 from time import sleep
 
 def get_usb_drives_list() -> list:
+    '''
+    Returns a list of all mounted USB storage devices.
+    '''
     listdrives = subprocess.Popen('mount', shell=True, stdout=subprocess.PIPE)
     listdrivesout, _ = listdrives.communicate()
     listdrivesout = str(listdrivesout)[2:]
@@ -24,6 +27,10 @@ def get_usb_drives_list() -> list:
 
 class USBStorage():
     def __init__(self, name: str):
+        '''
+        Creates a USBStorage object.
+        :param name: The name of the USB storage device. For example, if the device is mounted on /media/pi/USBSTORAGE, then the name is USBSTORAGE.
+        '''
         self.mounted = False
         self.name = name
 
@@ -47,6 +54,9 @@ class USBStorage():
         copy2(file_path, file_dest)
 
     def umount(self) -> None:
+        '''
+        Safely unmounts the USB storage device.
+        '''
         cmd = 'sudo umount ' + self.loc
         subprocess.Popen(str(cmd), shell=True, stdout=subprocess.PIPE)
         sleep(1)

@@ -1,6 +1,6 @@
 from picamera2 import Picamera2
 # from libcamera import controls
-from time import sleep
+from time import sleep, perf_counter
 from os import remove, mkdir
 from os.path import isdir
 from glob import glob
@@ -17,6 +17,7 @@ class Camera():
     def __init__(self, object_name: str, usb_storage: USBStorage = None) -> None:
         '''
         Creates a Camera object.
+
         :param object_name: The name of the object that is being photographed.
         :param usb_storage: The USBStorage object that is used to store the images.
         '''
@@ -26,8 +27,9 @@ class Camera():
         self._previous_preview_path = None
         self._usb_storage = usb_storage
         self._object_name = object_name
-        self._preview_config = self._cam.create_preview_configuration({"size": CAMERA_RESOLUTION_PREVIEW}, raw=self._cam.sensor_modes[2])
-        self._highres_config = self._cam.create_preview_configuration({"size": CAMERA_RESOLUTION_HIGHRES}, raw=self._cam.sensor_modes[2])
+        the_good_mode = self._cam.sensor_modes[2]
+        self._preview_config = self._cam.create_preview_configuration({"size": CAMERA_RESOLUTION_PREVIEW}, raw=the_good_mode)
+        self._highres_config = self._cam.create_preview_configuration({"size": CAMERA_RESOLUTION_HIGHRES}, raw=the_good_mode)
         self._cam.align_configuration(self._preview_config)
         self._cam.align_configuration(self._highres_config)
 
@@ -35,7 +37,6 @@ class Camera():
         self._set_preview_mode(True)
         if not self._cam.started:
             self._cam.start()
-
         # Delete all existing preview images
         for filename in glob(PREVIEW_IMAGE_PATH +"preview_*"):
             remove(filename)
@@ -91,13 +92,11 @@ class Camera():
                 self._cam.stop()
             self._cam.configure(self._preview_config)
             self._cam.start()
-            sleep(1)
         elif self._preview_mode and not preview_ON:
             if self._cam.started:
                 self._cam.stop()
             self._cam.configure(self._highres_config)
             self._cam.start()
-            sleep(1)
         self._preview_mode = preview_ON
 
 

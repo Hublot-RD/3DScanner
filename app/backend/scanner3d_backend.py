@@ -100,7 +100,7 @@ class Scanner3D_backend():
         '''
         name = 'preview_' + str(random()).split('.')[-1]
         # adding a random part to the file name ensures 
-        # that the clien won't have the file already cashed
+        # that the client won't have the file already cashed
         tmp_cam = Camera(object_name='preview', usb_storage=None)
         tmp_cam.capture_preview(name=name)
         del(tmp_cam)

@@ -15,11 +15,13 @@ status_updator_thd_obj = Thread()
 status_updator_thd_stop = Event()
 
 def status_updator_thd_target(stop_event: Event()) -> None:
+    '''
+    Continuously updates the status of the capture process.
+    '''
     while not stop_event.is_set():
-        if status_queue.not_empty:
+        if not status_queue.empty():
             status = status_queue.get()
             socketio.emit('update_progress', status)
-
         time.sleep(0.1)
     
     # Closing thread properly
@@ -27,8 +29,15 @@ def status_updator_thd_target(stop_event: Event()) -> None:
 
 @app.route('/')
 def index():
+    # Activate status update
+    global status_updator_thd_obj
+    if not status_updator_thd_obj.is_alive():
+        status_updator_thd_stop.clear()
+        status_updator_thd_obj = Thread(target=status_updator_thd_target, kwargs={'stop_event': status_updator_thd_stop})
+        status_updator_thd_obj.start()
     # Serve the HTML page
     return render_template(HOMEPAGE_TEMPLATE)
+
 
 @app.route('/cam_imgs/<filename>')
 def serve_image(filename):
@@ -39,30 +48,23 @@ def handle_refresh_preview():
     file_name = backend.refresh_image()
     socketio.emit('update_image', {'filename': file_name})
 
+@socketio.on('refresh_usb_list')
+def handle_refresh_preview():
+    device_list = backend.refresh_usb_list()
+    socketio.emit('update_usb_list', {'device_list': device_list})
+
 @socketio.on('start_capture')
 def handle_start_capture(data):
     backend.start(capture_params=data)
 
-    # Activate status update
-    global status_updator_thd_obj
-    if not status_updator_thd_obj.is_alive():
-        status_updator_thd_stop.clear()
-        status_updator_thd_obj = Thread(target=status_updator_thd_target, kwargs={'stop_event': status_updator_thd_stop})
-        status_updator_thd_obj.start()
-
 @socketio.on('stop_capture')
 def handle_stop_capture():
-    print('\nCapture stopped')
-
+    print('stop_capture received')
     # Stop backend
     backend.stop()
 
-    # Stop status update
-    status_updator_thd_stop.set()
-
-@socketio.on('light_toggled')
-def handle_light_toggled(data):
-    if data:
-        print('Light turned ON')
-    else:
-        print('Light turned OFF')
+@socketio.on('ok_capture')
+def handle_ok_capture():
+    print('ok_capture received')
+    # Stop backend
+    backend.stop()

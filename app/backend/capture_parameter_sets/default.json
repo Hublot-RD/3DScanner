@@ -1,0 +1,12 @@
+{
+    "PAUSE_TIME" : 1.0,
+    "MOTOR_CAMERA_SPEED" : 10.0, 
+    "MOTOR_CAMERA_STEP" : 20.0, 
+    "MOTOR_TURNTABLE_SPEED" : 45.0, 
+    "MOTOR_TURNTABLE_STEP" : 15.0, 
+    "CAMERA_EXPOSURE" : 42.0, 
+    "FLASH_ENABLED" : 1,
+    "OBJ_HEIGHT" : 20.0,
+    "OBJ_NAME" : "capture",
+    "USB_STORAGE_LOC" : "Aucun"
+}

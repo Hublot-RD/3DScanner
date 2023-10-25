@@ -37,6 +37,9 @@ h1 {
     flex: 0 0 200px;
 }
 
-/* p {
-    color: black;
-} */
+#statusCircle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: green; /* Initial color */
+}

@@ -15,6 +15,9 @@ status_updator_thd_obj = Thread()
 status_updator_thd_stop = Event()
 
 def status_updator_thd_target(stop_event: Event()) -> None:
+    '''
+    Continuously updates the status of the capture process.
+    '''
     while not stop_event.is_set():
         if not status_queue.empty():
             status = status_queue.get()

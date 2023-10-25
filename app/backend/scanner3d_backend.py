@@ -13,6 +13,11 @@ from app.backend.utils import forecast_time, CaptureParameters, s2time
 
 class Scanner3D_backend():
     def __init__(self, status_queue: Queue) -> None:
+        '''
+        Create a Scanner3D_backend object.
+
+        :param status_queue: The queue used to send status updates to the frontend.
+        '''
         # Set GPIO mode to board for retro and future compatibility
         GPIO.setmode(GPIO.BOARD)
         
@@ -43,6 +48,11 @@ class Scanner3D_backend():
 
 
     def start(self, capture_params: dict) -> None:
+        '''
+        Start the capture process.
+
+        :param capture_params: The capture parameters, as a dict.
+        '''
         # Start capture if not already capturing
         if not self._main_thd_obj.is_alive():
             # Save capture parameters
@@ -69,6 +79,9 @@ class Scanner3D_backend():
             self._main_thd_obj.start()
 
     def stop(self) -> None:
+        '''
+        Stop the capture process.
+        '''
         # Stop process
         self._main_thd_stop.set()
         self._main_thd_obj.join()
@@ -82,6 +95,9 @@ class Scanner3D_backend():
         print('Capture stopped properly')
     
     def refresh_image(self) -> str:
+        '''
+        Refresh preview image.
+        '''
         name = 'preview_' + str(random()).split('.')[-1]
         # adding a random part to the file name ensures 
         # that the clien won't have the file already cashed
@@ -91,6 +107,9 @@ class Scanner3D_backend():
         return name+'.jpg'
     
     def refresh_usb_list(self) -> list:
+        '''
+        Refresh USB devices list.
+        '''
         paths = get_usb_drives_list()
         devices = [path.split('/')[-1] for path in paths]
         return devices
@@ -156,6 +175,9 @@ class Scanner3D_backend():
         self._status_queue.put(self._status)
 
     def _capture360deg(self) -> float:
+        '''
+        Capture one layer of the object, all around it.
+        '''
         remaining_angle = 360.0
         while (remaining_angle > self._p.motor_turntable_step) and (not self._main_thd_stop.is_set()):
             # Capture image with flash
@@ -186,6 +208,9 @@ class Scanner3D_backend():
         return remaining_angle
     
     def _capture_whole_object(self) -> None:
+        '''
+        Capture whole object, layer by layer.
+        '''
         remaining_height = self._p.obj_height
         while (remaining_height > 0) and (not self._main_thd_stop.is_set()):
             # Take pictures all around object

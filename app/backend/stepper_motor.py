@@ -12,12 +12,12 @@ from threading import Thread
 class StepperMotor:
     def __init__(self, pinout: dict, speed: float = 180, step_per_revolution: int = 200, resolution: int = 8) -> None:
         """
-        Stepper motor.
+        Creates a stepper motor object.
 
-        -pinout: dict of the pinout for the stepper motor driver. Board numbers of the Raspberry Pi 4, not GPIO numbers !
-        -speed: speed of rotation [deg/s]. Default = 180
-        -resolution: motor step size. [1, 2, 4, 8]. Default = 8
-        -step_per_revolution: full steps per revolution of the stepper motor. Default = 200
+        :param pinout: dict of the pinout for the stepper motor driver. Board numbers of the Raspberry Pi 4, not GPIO numbers !
+        :param speed: speed of rotation [deg/s]. Default = 180
+        :param resolution: motor step size. [1, 2, 4, 8]. Default = 8
+        :param step_per_revolution: full steps per revolution of the stepper motor. Default = 200
         """
         # Save args
         self._resolution = resolution
@@ -55,20 +55,38 @@ class StepperMotor:
         self.main_thd.start()
     
     def get_step_time(self) -> float:
+        '''
+        Get the step time in seconds.
+        '''
         return self._step_time
 
     def set_step_time(self, step_time) -> None:
+        '''
+        Set the step time in seconds.
+
+        :param step_time: step time in seconds.
+        '''
         self._step_time = step_time
 
     def get_speed(self) -> float:
+        '''
+        Get the motor speed in degrees per second.
+        '''
         return 1.0/self._step2deg(self._step_time)
 
     def set_speed(self, speed: float) -> None:
+        '''
+        Set the motor speed in degrees per second.
+
+        :param speed: speed in degrees per second.
+        '''
         self._step_time = 1.0/self._deg2step(abs(speed))
     
     def set_target_position(self, angle: float):
         """
-        Setting this position will make the motor turn. This is the prefered way of controlling the motor.
+        Set the target position. Setting this position will make the motor turn. This is the prefered way of controlling the motor.
+
+        :param angle: angle to turn in degrees.
         """
         self._target_steps = self._deg2step(angle)
         if self._target_steps != 0:
@@ -76,7 +94,9 @@ class StepperMotor:
 
     def rotate(self, angle: float) -> None:
         '''
-        Make the motor turn by a specified angle. This is not suited for background tasks (threads).
+        Makes the motor turn by a specified angle. This is not suited for background tasks (threads).
+
+        :param angle: angle to turn in degrees.
         '''
         self.set_rotation_direction(clockwise=(angle < 0))
         nb_steps = self._deg2step(abs(angle))
@@ -86,6 +106,11 @@ class StepperMotor:
         self.is_busy = False
     
     def set_rotation_direction(self, clockwise: bool) -> None:
+        '''
+        Set the rotation direction of the motor.
+
+        :param clockwise: True for clockwise rotation, False for counterclockwise.
+        '''
         if clockwise:
             GPIO.output(self.pinout['DIR'], GPIO.HIGH)
             self._clockwise = True
@@ -107,6 +132,9 @@ class StepperMotor:
         self.step_cnt += 2*int(self._clockwise) - 1
     
     def _run(self):
+        '''
+        Background task that makes the motor turn. Without this, using set_target_position() will not work.
+        '''
         while True:
             if self._target_steps > 0 and not self._clockwise:
                 self._one_step()
@@ -136,10 +164,10 @@ class CameraAxis(StepperMotor):
         """
         Stepper motor of the camera axis.
 
-        -pinout: dict of the pinout for the stepper motor driver. Board numbers of the Raspberry Pi 4, not GPIO numbers !
-        -speed: speed of translation [mm/s]. Default = 10
-        -resolution: motor step size. [1, 2, 4, 8]. Default = 8
-        -step_per_revolution: full steps per revolution of the stepper motor. Default = 200
+        :param pinout: dict of the pinout for the stepper motor driver. Board numbers of the Raspberry Pi 4, not GPIO numbers !
+        :param speed: speed of translation [mm/s]. Default = 10
+        :param resolution: motor step size. [1, 2, 4, 8]. Default = 8
+        :param step_per_revolution: full steps per revolution of the stepper motor. Default = 200
         """
         self.translation_speed = speed
         super().__init__(pinout=pinout, resolution=resolution, step_per_revolution=step_per_revolution, speed=self.translation_speed/SCREW_PITCH)
@@ -153,22 +181,44 @@ class CameraAxis(StepperMotor):
         self.at_home = False
     
     def rotate(self, distance: float):
+        '''
+        Makes the camera move by a specified distance. This is not suited for background tasks (threads).
+
+        :param distance: distance to move in mm.
+        '''
         angle = distance/SCREW_PITCH
         super().rotate(angle=angle)
 
     def get_speed(self) -> float:
+        '''
+        Get the motor speed in mm per second.
+        '''
         return SCREW_PITCH/self._step2deg(self._step_time)
 
     def set_speed(self, speed: float) -> None:
+        '''
+        Set the motor speed in mm per second.
+
+        :param speed: speed in mm per second.
+        '''
         self._step_time = SCREW_PITCH/self._deg2step(speed)
     
     def set_target_position(self, distance: float):
+        """
+        Set the target position. Setting this position will make the motor turn. This is the prefered way of controlling the motor.
+
+        :param distance: distance to move in mm.
+        """
         angle = distance/SCREW_PITCH
         self._target_steps = self._deg2step(angle)
         if self._target_steps != 0:
             self.is_busy = True
 
     def home(self) -> None:
+        '''
+        Homes the camera axis. 
+        This is done by going up 20 mm, then down "fast" until the homing sensor is triggered, then up 10 mm, then down slow until the homing sensor is triggered again.
+        '''
         # go up 20 mm (to avoid problems if already at home)
         self.set_speed(30)
         self.set_target_position(20)
@@ -199,7 +249,6 @@ class CameraAxis(StepperMotor):
         print('Homing finished')
 
     def _homing_switch_triggered(self, pin):
-
         self.at_home = True
 
 

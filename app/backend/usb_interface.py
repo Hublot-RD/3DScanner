@@ -4,7 +4,7 @@ from time import sleep
 
 def get_usb_drives_list() -> list:
     '''
-    Returns a list of all mounted USB storage devices.
+    Returns a list of all mounted USB storage devices. Filters the internal storage of the RPi.
     '''
     listdrives = subprocess.Popen('mount', shell=True, stdout=subprocess.PIPE)
     listdrivesout, _ = listdrives.communicate()
@@ -29,6 +29,7 @@ class USBStorage():
     def __init__(self, name: str):
         '''
         Creates a USBStorage object.
+        
         :param name: The name of the USB storage device. For example, if the device is mounted on /media/pi/USBSTORAGE, then the name is USBSTORAGE.
         '''
         self.mounted = False
@@ -46,10 +47,22 @@ class USBStorage():
             
 
     def move_file_to(self, file_path: str, dest_folder: str) -> None:
+        '''
+        Moves a file to the specified destination folder.
+
+        :param file_path: The path of the file to be moved.
+        :param dest_folder: The destination folder.
+        '''
         file_dest = dest_folder + file_path.split('/')[-1]
         move(file_path, file_dest)
 
     def copy_file_to(self, file_path: str, dest_folder: str) -> None:
+        '''
+        Copies a file to the specified destination folder.
+
+        :param file_path: The path of the file to be copied.
+        :param dest_folder: The destination folder.
+        '''
         file_dest = dest_folder + file_path.split('/')[-1]
         copy2(file_path, file_dest)
 

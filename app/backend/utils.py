@@ -1,6 +1,6 @@
 try:
     from app.backend.constants import CAPTURE_PARAMETERS_PATH, DEFAULT_CAPTURE_PARAMETERS_PATH
-except:
+except ImportError:
     from constants import CAPTURE_PARAMETERS_PATH, DEFAULT_CAPTURE_PARAMETERS_PATH
 from warnings import warn
 import json

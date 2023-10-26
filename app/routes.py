@@ -6,7 +6,8 @@ from queue import Queue
 import time
 
 
-HOMEPAGE_TEMPLATE = 'test0.html'
+# HOMEPAGE_TEMPLATE = 'test0.html'
+HOMEPAGE_TEMPLATE = 'index.html'
 
 # Create backend object and necessary objects
 status_queue = Queue()

@@ -10,16 +10,25 @@
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 
+		
 	</head>
 	<body>
-	<section class="ftco-section">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-md-6 text-center mb-5">
-					<h2 class="heading-section">Interface de commande du scanneur 3D</h2>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="container" style="margin-left: 0; margin-right: 0; ">
+			<div class="row align-items-center justify-content-center">
+				<div class="col-sm-3">
+					<img src="{{ url_for('static', filename='images/hublot-logo-upd.png') }}" class="img-fluid" alt="Logo de la marque Hublot">
+				</div>
+				<div class="col text-center">
+					<h1 class="heading-section">Scanneur 3D</h1>
 				</div>
 			</div>
+		</div>
+	</nav>
+	<section class="ftco-section">
 
 			<div class="container">
 				<div class="row justify-content-center">

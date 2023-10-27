@@ -1,6 +1,6 @@
 from flask import render_template, send_from_directory
 from app import app, socketio
-from app.backend.scanner3d_backend import Scanner3D_backend
+# from app.backend.scanner3d_backend import Scanner3D_backend
 from threading import Thread, Event
 from queue import Queue
 import time
@@ -11,7 +11,7 @@ HOMEPAGE_TEMPLATE = 'index.html'
 
 # Create backend object and necessary objects
 status_queue = Queue()
-backend = Scanner3D_backend(status_queue=status_queue)
+# backend = Scanner3D_backend(status_queue=status_queue)
 status_updator_thd_obj = Thread()
 status_updator_thd_stop = Event()
 
@@ -46,26 +46,29 @@ def serve_image(filename):
 
 @socketio.on('refresh_preview')
 def handle_refresh_preview():
-    file_name = backend.refresh_image()
-    socketio.emit('update_image', {'filename': file_name})
+    # file_name = backend.refresh_image()
+    # socketio.emit('update_image', {'filename': file_name})
+    pass
 
 @socketio.on('refresh_usb_list')
 def handle_refresh_preview():
-    device_list = backend.refresh_usb_list()
-    socketio.emit('update_usb_list', {'device_list': device_list})
+    # device_list = backend.refresh_usb_list()
+    # socketio.emit('update_usb_list', {'device_list': device_list})
+    pass
 
 @socketio.on('start_capture')
 def handle_start_capture(data):
-    backend.start(capture_params=data)
+    # backend.start(capture_params=data)
+    pass
 
 @socketio.on('stop_capture')
 def handle_stop_capture():
     print('stop_capture received')
     # Stop backend
-    backend.stop()
+    # backend.stop()
 
 @socketio.on('ok_capture')
 def handle_ok_capture():
     print('ok_capture received')
     # Stop backend
-    backend.stop()
+    # backend.stop()

@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var stepRotationDropdown = document.getElementById('stepRotationDropdown');
     var speedTranslationDropdown = document.getElementById('speedTranslationDropdown');
     var stepTranslationDropdown = document.getElementById('stepTranslationDropdown');
-    // var exposureSlider = document.getElementById('exposureSlider')
     var flashCheckbox = document.getElementById('flashCheckbox');
     // Go, Stop, OK
     var goButton = document.getElementById('goButton');
@@ -86,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateHeightText(value) {
         if (value) {
-            heightText.innerHTML = String(value) + 'mm';
+            heightText.innerHTML = String(value) + ' mm';
         } else {
             heightText.innerHTML = 'Une erreur est survenue';
         }
@@ -141,12 +140,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     nameField.oninput = function() {
-        nameText.innerHTML = formatNameText(this.value) + '000.jpg';
+        nameText.innerHTML = formatNameText(this.value) + '_000.jpg';
     }
 
     refreshImageCameraButton.addEventListener('click', function() {
         refreshImageCameraButton.disabled = true;
         socket.emit('refresh_preview');
+        console.log('Refresh preview');
     });
 
     showMoreOptionButton.addEventListener('click', function() {

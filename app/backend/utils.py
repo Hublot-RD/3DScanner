@@ -45,9 +45,9 @@ class CaptureParameters():
         # Movement parameters
         self.pause_time = self._get_from_dict(params, 'PAUSE_TIME', float)
         self.motor_camera_speed = self._get_from_dict(params, 'MOTOR_CAMERA_SPEED', float)
-        self.motor_camera_step = self._get_from_dict(params, 'MOTOR_CAMERA_STEP', float)
+        self.motor_camera_step = self._get_from_dict(params, 'MOTOR_CAMERA_STEP', int)
         self.motor_turntable_speed = self._get_from_dict(params, 'MOTOR_TURNTABLE_SPEED', float)
-        self.motor_turntable_step = self._get_from_dict(params, 'MOTOR_TURNTABLE_STEP', float)
+        self.motor_turntable_step = self._get_from_dict(params, 'MOTOR_TURNTABLE_STEP', int)
 
         # Camera parameters
         self.camera_exposure = self._get_from_dict(params, 'CAMERA_EXPOSURE', float)

@@ -43,8 +43,8 @@ class Scanner3D_backend():
         self._led_error = LED_Controller(cst.LEDS_PINOUT['ERROR'], reversed=True)
 
         # Play LED animation
-        # play_startup_sequence(capture_pin=self._led_capture.pin, error_pin=self._led_error.pin, flash_pin=self._led_flash.pin)
-        # sleep(1)
+        play_startup_sequence(capture_pin=self._led_capture.pin, error_pin=self._led_error.pin, flash_pin=self._led_flash.pin)
+        sleep(1)
 
 
     def start(self, capture_params: dict) -> None:

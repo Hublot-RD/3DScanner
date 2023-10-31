@@ -73,11 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update functions
     function updateImageCamera(filename) {
         if (filename) {
-            console.log("filename is not empty!");
-            console.log('/cam_imgs/' + filename);
-            // imageCamera.src ="{{ url_for('serve_image', filename='" + String(filename) + "') }}"
             imageCamera.src = '/cam_imgs/' + filename;
-            // imageCamera.src = 'static/cam_imgs/preview.jpg'
         } else {
             console.error("Error: Filename is empty!");
         }
@@ -146,7 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
     refreshImageCameraButton.addEventListener('click', function() {
         refreshImageCameraButton.disabled = true;
         socket.emit('refresh_preview');
-        console.log('Refresh preview');
     });
 
     showMoreOptionButton.addEventListener('click', function() {

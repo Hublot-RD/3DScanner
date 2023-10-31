@@ -45,9 +45,9 @@ class CaptureParameters():
         # Movement parameters
         self.pause_time = self._get_from_dict(params, 'PAUSE_TIME', float)
         self.motor_camera_speed = self._get_from_dict(params, 'MOTOR_CAMERA_SPEED', float)
-        self.motor_camera_step = self._get_from_dict(params, 'MOTOR_CAMERA_STEP', float)
+        self.motor_camera_step = self._get_from_dict(params, 'MOTOR_CAMERA_STEP', int)
         self.motor_turntable_speed = self._get_from_dict(params, 'MOTOR_TURNTABLE_SPEED', float)
-        self.motor_turntable_step = self._get_from_dict(params, 'MOTOR_TURNTABLE_STEP', float)
+        self.motor_turntable_step = self._get_from_dict(params, 'MOTOR_TURNTABLE_STEP', int)
 
         # Camera parameters
         self.camera_exposure = self._get_from_dict(params, 'CAMERA_EXPOSURE', float)
@@ -78,19 +78,16 @@ def forecast_time(params: CaptureParameters):
     save_usb_time = 0.1 # second (has to be tuned)
     time_startup = 1
     time_closing = 1
-
-    nb_layers = 1 + ceil(params.obj_height / params.motor_camera_step)
-    nb_img_per_layer = floor(360/params.motor_turntable_step)
-    remaining_angle_tot = nb_layers * (360 % params.motor_turntable_step)
-    nb_pics = nb_img_per_layer * nb_layers
+    time_homing = 5
+    nb_pics = params.motor_turntable_step * params.motor_camera_step
 
 
     total_time += nb_pics * (2*params.pause_time+one_picture_time+save_usb_time)
-    total_time += nb_img_per_layer * params.motor_turntable_step / params.motor_turntable_speed
-    total_time += max(params.obj_height / params.motor_camera_speed,
-                      remaining_angle_tot / params.motor_turntable_speed)
+    total_time += params.motor_camera_step * 360.0 / params.motor_turntable_speed
+    total_time += params.obj_height / params.motor_camera_speed
     total_time += time_startup
     total_time += time_closing
+    total_time += time_homing
     return total_time, nb_pics
 
 def s2time(seconds: float) -> str:

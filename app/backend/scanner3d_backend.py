@@ -114,10 +114,6 @@ class Scanner3D_backend():
         devices = [path.split('/')[-1] for path in paths]
         return devices
     
-    # def _capture_photo(self) -> str:
-    #     self._cam.capture_highres()
-    #     return cst.HIGHRES_IMAGE_PATH
-    
     def _main_thd_target(self) -> None:
         try:
             # Start blink capture LED
@@ -143,6 +139,7 @@ class Scanner3D_backend():
             self._led_error.set_state(True)
             self._update_status(info={'text_value' : 'Une erreur est survenue: ' + str(e),
                                       'state' : 'error'})
+            raise e
 
         else:
             if not self._main_thd_stop.is_set(): # Successful finish
@@ -174,65 +171,42 @@ class Scanner3D_backend():
         self._status = {k: info[k] if k in info else v for k, v in self._status.items()}
         self._status_queue.put(self._status)
 
-    def _capture360deg(self) -> float:
+    def _capture360deg(self) -> None:
         '''
         Capture one layer of the object, all around it.
         '''
-        remaining_angle = 360.0
-        while (remaining_angle > self._p.motor_turntable_step) and (not self._main_thd_stop.is_set()):
-            # Capture image with flash
-            self._update_status(info={'text_value' : f'Capture de l\'image {self._cam.highres_img_cnt}/{self._total_pics}'})
-            if self._p.flash_enabled:
-                self._led_flash.set_state(True)
-            self._cam.capture_highres()
-            if self._p.flash_enabled:
-                self._led_flash.set_state(False)
+        step_angle = 360.0 / self._p.motor_turntable_step
+        for _ in range(self._p.motor_turntable_step):
+            if not self._main_thd_stop.is_set():
+                # Capture image with flash
+                self._update_status(info={'text_value' : f'Capture de l\'image {self._cam.highres_img_cnt}/{self._total_pics}'})
+                if self._p.flash_enabled:
+                    self._led_flash.set_state(True)
+                self._cam.capture_highres()
+                if self._p.flash_enabled:
+                    self._led_flash.set_state(False)
 
-            # Move turntable
-            sleep(self._p.pause_time)
-            self._update_status({'progress_value' : 100*(self._cam.highres_img_cnt-1)/self._total_pics})
-            self._mot_turntable.rotate(self._p.motor_turntable_step)
-            remaining_angle -= self._p.motor_turntable_step
-            sleep(self._p.pause_time)
-        
-        # Capture last image
-        if not self._main_thd_stop.is_set():
-            self._update_status(info={'text_value' : f'Capture de l\'image {self._cam.highres_img_cnt}/{self._total_pics}'})
-            if self._p.flash_enabled:
-                self._led_flash.set_state(True)
-            self._cam.capture_highres()
-            if self._p.flash_enabled:
-                self._led_flash.set_state(False)
-            sleep(self._p.pause_time)
-
-        return remaining_angle
+                # Move turntable
+                sleep(self._p.pause_time)
+                self._update_status({'progress_value' : 100*(self._cam.highres_img_cnt-1)/self._total_pics})
+                self._mot_turntable.rotate(step_angle)
+                sleep(self._p.pause_time)
     
     def _capture_whole_object(self) -> None:
         '''
         Capture whole object, layer by layer.
         '''
-        remaining_height = self._p.obj_height
-        while (remaining_height > 0) and (not self._main_thd_stop.is_set()):
-            # Take pictures all around object
-            remaining_angle = self._capture360deg()
-            
+        height_step = self._p.obj_height / (self._p.motor_camera_step - 1)
+        for step in range(self._p.motor_camera_step):
             if not self._main_thd_stop.is_set():
-                # Move camera up and turntable to initial position
+                # Take pictures all around object
+                self._capture360deg()
+            
+            if not self._main_thd_stop.is_set() and step < self._p.motor_camera_step - 1:
+                # Move camera up
                 self._update_status(info={'state' : 'Move to next height'})
-                height_up = min(self._p.motor_camera_step, remaining_height)
-                self._mot_camera.set_target_position(distance=height_up)
-                self._mot_turntable.set_target_position(angle=remaining_angle)
-                remaining_height -= height_up
-
-                # Wait for this height to be finished
-                while self._mot_camera.is_busy or self._mot_turntable.is_busy:
-                    sleep(0.1)
+                self._mot_camera.rotate(distance=height_step)
                 sleep(self._p.pause_time)
-        
-        # Capture last height
-        if not self._main_thd_stop.is_set():
-            remaining_angle = self._capture360deg()
-            self._mot_turntable.set_target_position(angle=remaining_angle)
         
 
 

@@ -6,7 +6,8 @@ from queue import Queue
 import time
 
 
-HOMEPAGE_TEMPLATE = 'test0.html'
+# HOMEPAGE_TEMPLATE = 'test0.html'
+HOMEPAGE_TEMPLATE = 'index.html'
 
 # Create backend object and necessary objects
 status_queue = Queue()
@@ -47,15 +48,18 @@ def serve_image(filename):
 def handle_refresh_preview():
     file_name = backend.refresh_image()
     socketio.emit('update_image', {'filename': file_name})
+    # pass
 
 @socketio.on('refresh_usb_list')
 def handle_refresh_preview():
     device_list = backend.refresh_usb_list()
     socketio.emit('update_usb_list', {'device_list': device_list})
+    # pass
 
 @socketio.on('start_capture')
 def handle_start_capture(data):
     backend.start(capture_params=data)
+    # pass
 
 @socketio.on('stop_capture')
 def handle_stop_capture():

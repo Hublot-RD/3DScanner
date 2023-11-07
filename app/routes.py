@@ -29,6 +29,7 @@ def status_updator_thd_target(stop_event: Event()) -> None:
     print('status_updator_thd stopped')
 
 @app.route('/')
+# @socketio.on('/')
 def index():
     # Activate status update
     global status_updator_thd_obj

@@ -1,2 +1,5 @@
 flask
 flask-socketio
+RPi.GPIO
+pyexiftool
+# gevent-websocket

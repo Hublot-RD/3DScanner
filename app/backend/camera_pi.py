@@ -1,5 +1,6 @@
 from picamera2 import Picamera2
 # from libcamera import controls
+from exiftool import ExifToolHelper
 from time import sleep, perf_counter
 from os import remove, mkdir
 from os.path import isdir
@@ -56,10 +57,24 @@ class Camera():
         path = HIGHRES_IMAGE_PATH + self._object_name + '/' 
         if not isdir(path):
             mkdir(path)
+        
+        # Focus camera
         success = self._cam.autofocus_cycle()
         if not success:
             Warning('Autofocus failed! Continuing anyway...')
+        
+        # Take picture
         metadata = self._cam.capture_file(path+name)
+        with ExifToolHelper() as et:
+            et.set_tags(path+name, 
+                        tags={"FocalLength": 2.75,
+                              "FNumber": 2.2, 
+                              "FocalPlaneXResolution" : 25.4/(1.4/1000), 
+                              "FocalPlaneYResolution" : 25.4/(1.4/1000), 
+                              "FocalPlaneResolutionUnit" : "inch"},
+                        params=["-P", "-overwrite_original"])
+        
+        # Copy picture to USB storage
         if self._usb_storage is not None:
             dest_folder = self._usb_storage.loc + self._object_name + '/'
             if not isdir(dest_folder):

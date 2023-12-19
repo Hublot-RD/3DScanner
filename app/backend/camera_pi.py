@@ -1,5 +1,5 @@
 from picamera2 import Picamera2
-# from libcamera import controls
+from libcamera import controls
 from exiftool import ExifToolHelper
 from time import sleep, perf_counter
 from os import remove, mkdir
@@ -106,11 +106,19 @@ class Camera():
             if self._cam.started:
                 self._cam.stop()
             self._cam.configure(self._preview_config)
+            self._cam.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.CentreWeighted,
+                                "AeExposureMode": controls.AeExposureModeEnum.Long,
+                                "AeConstraintMode": controls.AeConstraintModeEnum.Highlight,
+                                })
             self._cam.start()
         elif self._preview_mode and not preview_ON:
             if self._cam.started:
                 self._cam.stop()
             self._cam.configure(self._highres_config)
+            self._cam.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.CentreWeighted,
+                                "AeExposureMode": controls.AeExposureModeEnum.Long,
+                                "AeConstraintMode": controls.AeConstraintModeEnum.Shadows,
+                                })
             self._cam.start()
         self._preview_mode = preview_ON
 

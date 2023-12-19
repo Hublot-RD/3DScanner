@@ -205,6 +205,10 @@ document.addEventListener('DOMContentLoaded', function() {
         goButton.disabled = false;
         refreshImageCameraButton.disabled = false
         progressContainer.style.display = 'none';
+
+        // reset necessary elements
+        updateProgressBar(0);
+        updateProgressText();
     });
 
     usbDeviceDropdown.addEventListener('click', function() {
@@ -227,6 +231,15 @@ document.addEventListener('DOMContentLoaded', function() {
             stopButton.style.display = 'none';
             // Show OK button
             okButton.style.display = 'inline';
+        }
+        else {
+            // Show progress bar, indicator, stop button
+            progressBar.style.display = 'inline';
+            progressBarIndicator.style.display = 'inline';
+            stopButton.style.display = 'inline';
+            // Hide OK button
+            okButton.style.display = 'none';
+        
         }
     });
 

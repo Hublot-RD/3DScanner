@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+import pyexiv2
 
 def create_circular_kernel(size):
     radius = size[0] // 2
@@ -21,13 +22,13 @@ def blue_shift(img):
     else:
         return img
 
-def create_mask_from_hue(image_path, debug=False) -> np.ndarray:
+def create_mask_from_hue(image_path, crop_img=False, debug=False) -> np.ndarray:
     # Load the image
-    img = cv2.imread(image_path)
-    if debug: show_image(img, "Original")
+    img_original = cv2.imread(image_path)
+    if debug: show_image(img_original, "Original")
 
     # Perform white balance
-    img = blue_shift(img)
+    img = blue_shift(img_original)
     if debug: show_image(img, "Blue shifted")
 
     # Convert the image to hue only
@@ -67,20 +68,31 @@ def create_mask_from_hue(image_path, debug=False) -> np.ndarray:
     mask = cv2.dilate(mask, kernel, iterations=1)
     if debug: show_image(mask, "After dilating")
 
-    # Fill shape
+    # Fill shape and crop
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     if len(contours) > 0:
         max_contour = max(contours, key=cv2.contourArea)
         mask = np.zeros_like(mask)
         cv2.drawContours(mask, [max_contour], 0, 255, -1)
         if debug: show_image(mask, "Contour mask")
+
+        if crop_img:
+            # Find bounding rectangle
+            [x, y, w, h] = cv2.boundingRect(max_contour)
+
+            boundaries.append([x, y, w, h])
+
+            # Crop image and mask to bounding rectangle
+            img_original = img_original[y:y+h, x:x+w]
+            mask = mask[y:y+h, x:x+w]
+            if debug: show_image(img_original, "Cropped image")
     else:
         print("No contours found")
 
     # Reshape mask to three channels
     mask = np.repeat(mask[:, :, np.newaxis], 3, axis=2)
 
-    return mask
+    return mask, img_original
 
 # Usage
 SOURCE_PATH = "C:/Users/v.philippoz/Documents/scanner3D/"
@@ -91,35 +103,44 @@ for i in range(IMAGE_COUNT):
     path = f"{SOURCE_PATH}{OBJECT_NAME}/{OBJECT_NAME}_" + "{:03d}.jpg".format(i+1)
     files.append(path)
 
-# file_no = 14
-
-# # Create mask
-# # msk = create_mask(files[file_no], files[file_no+1])
-# msk = create_mask_from_hue(files[file_no], debug=True)
-
-# # Apply mask to image
-# img = cv2.imread(files[file_no])
-# result_image = cv2.bitwise_and(img, img, mask=msk)
-# cv2.imshow("Result", cv2.resize(result_image, (1000, 600)))
+boundaries = []
 
 # Create output directory
 if not os.path.exists(f"{SOURCE_PATH}{OBJECT_NAME}/msk/"):
     os.makedirs(f"{SOURCE_PATH}{OBJECT_NAME}/msk/")
 
-for i, path in enumerate(files):
+
+merged = cv2.imread(files[0])
+for i, in_path in enumerate(files):
     print(f"Processing image {i+1}/{len(files)}")
     # Load the image
-    tmp_img = cv2.imread(path)
+    tmp_img = cv2.imread(in_path)
     # cv2.imshow("Before "+str(i+1), cv2.resize(tmp_img, (1000, 600)))
-
-    # Create the mask
-    mask = create_mask_from_hue(path, debug=False)
-
-    # Save the mask
-    out_path = f"{SOURCE_PATH}{OBJECT_NAME}/msk/{OBJECT_NAME}_" + "{:03d}_msk.jpg".format(i+1)
-    cv2.imwrite(out_path, mask)
-
     
+    # Merge the image to get a better idea of the object boundary
+    merged = cv2.addWeighted(merged, i/(i+1), tmp_img, 1/(i+1), 0)
+
+    # # Create the mask
+    # mask, img = create_mask_from_hue(in_path, crop_img=True, debug=False)
+
+    # # Save the mask
+    # out_path = f"{SOURCE_PATH}{OBJECT_NAME}/msk/{OBJECT_NAME}_" + "{:03d}_msk.jpg".format(i+1)
+    # cv2.imwrite(out_path, mask)
+
+    # # Save the cropped image
+    # out_path = f"{SOURCE_PATH}{OBJECT_NAME}/cropped/{OBJECT_NAME}_" + "{:03d}.jpg".format(i+1)
+    # cv2.imwrite(out_path, img)
+
+    # # Copy metadata from original image to cropped image
+    # in_metadata = pyexiv2.Image(in_path)
+    # out_metadata = pyexiv2.Image(out_path)
+    # out_metadata.modify_exif(in_metadata.read_exif())
+
+# print("Boundaries:", boundaries)
+
+out_path = f"{SOURCE_PATH}{OBJECT_NAME}/{OBJECT_NAME}_merged.jpg"
+cv2.imwrite(out_path, merged)
+
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

@@ -13,17 +13,15 @@ HOMEPAGE_TEMPLATE = 'index.html'
 status_queue = Queue()
 backend = Scanner3D_backend(status_queue=status_queue)
 status_updator_thd_obj = Thread()
-status_updator_thd_stop = Event()
 
-def status_updator_thd_target(stop_event: Event()) -> None:
+def status_updator_thd_target() -> None:
     '''
     Continuously updates the status of the capture process.
     '''
-    while not stop_event.is_set():
-        if not status_queue.empty():
-            status = status_queue.get()
-            socketio.emit('update_progress', status)
-        time.sleep(0.1)
+    if not status_queue.empty():
+        status = status_queue.get()
+        socketio.emit('update_progress', status)
+    time.sleep(0.1)
     
     # Closing thread properly
     print('status_updator_thd stopped')
@@ -34,8 +32,7 @@ def index():
     # Activate status update
     global status_updator_thd_obj
     if not status_updator_thd_obj.is_alive():
-        status_updator_thd_stop.clear()
-        status_updator_thd_obj = Thread(target=status_updator_thd_target, kwargs={'stop_event': status_updator_thd_stop})
+        status_updator_thd_obj = Thread(target=status_updator_thd_target, daemon=True)
         status_updator_thd_obj.start()
     # Serve the HTML page
     return render_template(HOMEPAGE_TEMPLATE)

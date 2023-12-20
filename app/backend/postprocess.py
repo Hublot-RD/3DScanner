@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 
@@ -83,8 +84,8 @@ def create_mask_from_hue(image_path, debug=False) -> np.ndarray:
 
 # Usage
 SOURCE_PATH = "C:/Users/v.philippoz/Documents/scanner3D/"
-OBJECT_NAME = "qwert"
-IMAGE_COUNT = 40
+OBJECT_NAME = "etau_1812"
+IMAGE_COUNT = 180
 files = []
 for i in range(IMAGE_COUNT):
     path = f"{SOURCE_PATH}{OBJECT_NAME}/{OBJECT_NAME}_" + "{:03d}.jpg".format(i+1)
@@ -101,6 +102,10 @@ for i in range(IMAGE_COUNT):
 # result_image = cv2.bitwise_and(img, img, mask=msk)
 # cv2.imshow("Result", cv2.resize(result_image, (1000, 600)))
 
+# Create output directory
+if not os.path.exists(f"{SOURCE_PATH}{OBJECT_NAME}/msk/"):
+    os.makedirs(f"{SOURCE_PATH}{OBJECT_NAME}/msk/")
+
 for i, path in enumerate(files):
     print(f"Processing image {i+1}/{len(files)}")
     # Load the image
@@ -112,7 +117,6 @@ for i, path in enumerate(files):
 
     # Save the mask
     out_path = f"{SOURCE_PATH}{OBJECT_NAME}/msk/{OBJECT_NAME}_" + "{:03d}_msk.jpg".format(i+1)
-    print(f"Saving mask to {out_path}")
     cv2.imwrite(out_path, mask)
 
     

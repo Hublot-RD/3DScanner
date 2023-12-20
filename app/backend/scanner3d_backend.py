@@ -186,11 +186,31 @@ class Scanner3D_backend():
                 if self._p.flash_enabled:
                     self._led_flash.set_state(False)
 
-                # Move turntable
-                sleep(self._p.pause_time)
-                self._update_status({'progress_value' : 100*(self._cam.highres_img_cnt-1)/self._total_pics})
-                self._mot_turntable.rotate(step_angle)
-                sleep(self._p.pause_time)
+            # Move turntable and merge pictures simultaneously
+            sleep(self._p.pause_time)
+            self._update_status({'progress_value' : 100*(self._cam.highres_img_cnt-1)/self._total_pics})
+            self._mot_turntable.set_target_position(self._p.motor_turntable_step)
+            self._merge_thd_obj = Thread(target=self._cam.merge_highres)
+            self._merge_thd_obj.start()
+            self._merge_thd_obj.join()
+            del(self._merge_thd_obj)
+            while self._mot_turntable.is_busy:
+                sleep(0.1)
+            
+            remaining_angle -= self._p.motor_turntable_step
+            sleep(self._p.pause_time)
+        
+        # Capture last image
+        if not self._main_thd_stop.is_set():
+            self._update_status(info={'text_value' : f'Capture de l\'image {self._cam.highres_img_cnt}/{self._total_pics}'})
+            if self._p.flash_enabled:
+                self._led_flash.set_state(True)
+            self._cam.capture_highres()
+            if self._p.flash_enabled:
+                self._led_flash.set_state(False)
+            sleep(self._p.pause_time)
+
+        return remaining_angle
     
     def _capture_whole_object(self) -> None:
         '''

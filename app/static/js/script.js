@@ -220,10 +220,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     socket.on('update_progress', function(data) {
-        updateProgressBar(data.progress_value);
-        updateProgressText(data.text_value);
-        updateProgressTime(data.time_value);
-        stateScanner = String(data.state);
         if (data.state == 'end') {
             // Hide progress bar, indicator, stop button
             progressBar.style.display = 'none';
@@ -239,8 +235,11 @@ document.addEventListener('DOMContentLoaded', function() {
             stopButton.style.display = 'inline';
             // Hide OK button
             okButton.style.display = 'none';
-        
         }
+        updateProgressBar(data.progress_value);
+        updateProgressText(data.text_value);
+        updateProgressTime(data.time_value);
+        stateScanner = String(data.state);
     });
 
     socket.on('update_image', function(data) {

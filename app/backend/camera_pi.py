@@ -5,6 +5,7 @@ from time import sleep, perf_counter
 from os import remove, mkdir
 from os.path import isdir
 from glob import glob
+import cv2
 try:
     from app.backend.usb_interface import USBStorage
     from app.backend.constants import CAMERA_RESOLUTION_HIGHRES, CAMERA_RESOLUTION_PREVIEW, PREVIEW_IMAGE_PATH, HIGHRES_IMAGE_PATH
@@ -43,9 +44,13 @@ class Camera():
             remove(filename)
     
     def __del__(self) -> None:
-        self._cam.close()
-        sleep(2) # make sure the camera is closed before deleting the object
-        del(self._cam)
+        try:
+            self._cam.close()
+            sleep(2) # make sure the camera is closed before deleting the object
+            del(self._cam)
+        except AttributeError:
+            # The camera was not initialised
+            pass
 
     def capture_highres(self) -> dict:
         '''
@@ -100,6 +105,30 @@ class Camera():
     def reset(self) -> None:
         self.highres_img_cnt = 1
         self._set_preview_mode(True)
+
+    def merge_highres(self) -> None:
+        '''
+        Add the last high resolution image into the merged image.
+        '''
+        img_id = self.highres_img_cnt - 1
+        new_img_name = self._object_name + '_{0:03}.jpg'.format(img_id)
+        new_img_path = HIGHRES_IMAGE_PATH + self._object_name + '/' + new_img_name
+        out_path = f"{HIGHRES_IMAGE_PATH}{self._object_name}/{self._object_name}_merged.jpg"
+
+        if img_id <= 1:
+            # Initialise the merged image
+            merged = cv2.imread(new_img_path)
+        else:
+            # Load the new image
+            new_img = cv2.imread(new_img_path)
+
+            # Load the merged image
+            merged = cv2.imread(out_path)
+            
+            # Merge the image to get a better idea of the object boundary
+            merged = cv2.addWeighted(merged, (img_id-1)/img_id, new_img, 1/img_id, 0)
+        cv2.imwrite(out_path, merged)
+
     
     def _set_preview_mode(self, preview_ON: bool) -> None:
         if not self._preview_mode and preview_ON:

@@ -44,9 +44,13 @@ class Camera():
             remove(filename)
     
     def __del__(self) -> None:
-        self._cam.close()
-        sleep(2) # make sure the camera is closed before deleting the object
-        del(self._cam)
+        try:
+            self._cam.close()
+            sleep(2) # make sure the camera is closed before deleting the object
+            del(self._cam)
+        except AttributeError:
+            # The camera was not initialised
+            pass
 
     def capture_highres(self) -> dict:
         '''
@@ -106,19 +110,23 @@ class Camera():
         '''
         Add the last high resolution image into the merged image.
         '''
-        new_img_name = self._object_name + '_{0:03}.jpg'.format(self.highres_img_cnt)
+        img_id = self.highres_img_cnt - 1
+        new_img_name = self._object_name + '_{0:03}.jpg'.format(img_id)
         new_img_path = HIGHRES_IMAGE_PATH + self._object_name + '/' + new_img_name
+        out_path = f"{HIGHRES_IMAGE_PATH}{self._object_name}/{self._object_name}_merged.jpg"
 
-        if self.highres_img_cnt <= 1:
+        if img_id <= 1:
             # Initialise the merged image
             merged = cv2.imread(new_img_path)
         else:
             # Load the new image
             new_img = cv2.imread(new_img_path)
+
+            # Load the merged image
+            merged = cv2.imread(out_path)
             
             # Merge the image to get a better idea of the object boundary
-            merged = cv2.addWeighted(merged, (self.highres_img_cnt-1)/self.highres_img_cnt, new_img, 1/self.highres_img_cnt, 0)
-        out_path = f"{HIGHRES_IMAGE_PATH}{self._object_name}/{self._object_name}_merged.jpg"
+            merged = cv2.addWeighted(merged, (img_id-1)/img_id, new_img, 1/img_id, 0)
         cv2.imwrite(out_path, merged)
 
     

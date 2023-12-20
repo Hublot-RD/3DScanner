@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 import pyexiv2
+from time import perf_counter
 
 def create_circular_kernel(size):
     radius = size[0] // 2
@@ -110,9 +111,13 @@ if not os.path.exists(f"{SOURCE_PATH}{OBJECT_NAME}/msk/"):
     os.makedirs(f"{SOURCE_PATH}{OBJECT_NAME}/msk/")
 
 
+# Time the process
+start_time = perf_counter()
+
 merged = cv2.imread(files[0])
 for i, in_path in enumerate(files):
     print(f"Processing image {i+1}/{len(files)}")
+
     # Load the image
     tmp_img = cv2.imread(in_path)
     # cv2.imshow("Before "+str(i+1), cv2.resize(tmp_img, (1000, 600)))
@@ -140,6 +145,10 @@ for i, in_path in enumerate(files):
 
 out_path = f"{SOURCE_PATH}{OBJECT_NAME}/{OBJECT_NAME}_merged.jpg"
 cv2.imwrite(out_path, merged)
+
+end_time = perf_counter()
+print("Time elapsed:", round(end_time - start_time, 3), "s")
+print("Average time per image:", round((end_time - start_time) / IMAGE_COUNT, 3), "s")
 
 
 cv2.waitKey(0)

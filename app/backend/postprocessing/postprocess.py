@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-import pyexiv2
+# import pyexiv2
 from time import perf_counter
 
 def create_circular_kernel(size):
@@ -97,6 +97,7 @@ def create_mask_from_hue(image_path, crop_img=False, debug=False) -> np.ndarray:
 
 # Usage
 SOURCE_PATH = "C:/Users/v.philippoz/Documents/scanner3D/"
+# SOURCE_PATH = "/home/pi/scanner3d/3DScanner/app/static/cam_imgs/highres/"
 OBJECT_NAME = "etau_1812"
 IMAGE_COUNT = 180
 files = []

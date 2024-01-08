@@ -1,0 +1,382 @@
+[2024-01-08 15:32:08 +0100] [8044] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 15:32:08 +0100] [8044] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (8044)
+[2024-01-08 15:32:08 +0100] [8044] [INFO] Using worker: sync
+[2024-01-08 15:32:08 +0100] [8045] [INFO] Booting worker with pid: 8045
+[2024-01-08 15:32:08 +0100] [8045] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 790, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/home/pi/scanner3d/3DScanner/wsgi.py", line 2, in <module>
+    from app import app, socketio
+  File "/home/pi/scanner3d/3DScanner/app/__init__.py", line 2, in <module>
+    from flask_socketio import SocketIO
+ModuleNotFoundError: No module named 'flask_socketio'
+[2024-01-08 15:32:08 +0100] [8045] [INFO] Worker exiting (pid: 8045)
+[2024-01-08 15:32:08 +0100] [8044] [INFO] Shutting down: Master
+[2024-01-08 15:32:08 +0100] [8044] [INFO] Reason: Worker failed to boot.
+[2024-01-08 15:39:47 +0100] [8430] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 15:39:47 +0100] [8430] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (8430)
+[2024-01-08 15:39:47 +0100] [8430] [INFO] Using worker: sync
+[2024-01-08 15:39:47 +0100] [8434] [INFO] Booting worker with pid: 8434
+[2024-01-08 15:39:47 +0100] [8434] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 984, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'wsgi'
+[2024-01-08 15:39:47 +0100] [8434] [INFO] Worker exiting (pid: 8434)
+[2024-01-08 15:39:47 +0100] [8430] [INFO] Shutting down: Master
+[2024-01-08 15:39:47 +0100] [8430] [INFO] Reason: Worker failed to boot.
+[2024-01-08 15:40:12 +0100] [8471] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 15:40:12 +0100] [8471] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (8471)
+[2024-01-08 15:40:12 +0100] [8471] [INFO] Using worker: sync
+[2024-01-08 15:40:12 +0100] [8472] [INFO] Booting worker with pid: 8472
+[2024-01-08 15:40:13 +0100] [8472] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 790, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/home/pi/scanner3d/3DScanner/wsgi.py", line 2, in <module>
+    from app import app, socketio
+  File "/home/pi/scanner3d/3DScanner/app/__init__.py", line 2, in <module>
+    from flask_socketio import SocketIO
+ModuleNotFoundError: No module named 'flask_socketio'
+[2024-01-08 15:40:13 +0100] [8472] [INFO] Worker exiting (pid: 8472)
+[2024-01-08 15:40:13 +0100] [8471] [INFO] Shutting down: Master
+[2024-01-08 15:40:13 +0100] [8471] [INFO] Reason: Worker failed to boot.
+[2024-01-08 15:44:25 +0100] [8840] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 15:44:25 +0100] [8840] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (8840)
+[2024-01-08 15:44:25 +0100] [8840] [INFO] Using worker: sync
+[2024-01-08 15:44:25 +0100] [8841] [INFO] Booting worker with pid: 8841
+[2024-01-08 15:44:25 +0100] [8841] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 790, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/home/pi/scanner3d/3DScanner/wsgi.py", line 2, in <module>
+    from app import app, socketio
+  File "/home/pi/scanner3d/3DScanner/app/__init__.py", line 2, in <module>
+    from flask_socketio import SocketIO
+ModuleNotFoundError: No module named 'flask_socketio'
+[2024-01-08 15:44:25 +0100] [8841] [INFO] Worker exiting (pid: 8841)
+[2024-01-08 15:44:26 +0100] [8840] [INFO] Shutting down: Master
+[2024-01-08 15:44:26 +0100] [8840] [INFO] Reason: Worker failed to boot.
+[2024-01-08 15:58:33 +0100] [9606] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 15:58:33 +0100] [9606] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (9606)
+[2024-01-08 15:58:33 +0100] [9606] [INFO] Using worker: sync
+[2024-01-08 15:58:33 +0100] [9607] [INFO] Booting worker with pid: 9607
+[2024-01-08 15:58:33 +0100] [9607] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 790, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/home/pi/scanner3d/3DScanner/wsgi.py", line 2, in <module>
+    from app import app, socketio
+  File "/home/pi/scanner3d/3DScanner/app/__init__.py", line 2, in <module>
+    from flask_socketio import SocketIO
+ModuleNotFoundError: No module named 'flask_socketio'
+[2024-01-08 15:58:33 +0100] [9607] [INFO] Worker exiting (pid: 9607)
+[2024-01-08 15:58:33 +0100] [9606] [INFO] Shutting down: Master
+[2024-01-08 15:58:33 +0100] [9606] [INFO] Reason: Worker failed to boot.
+[2024-01-08 16:17:03 +0100] [573] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 16:17:03 +0100] [573] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (573)
+[2024-01-08 16:17:03 +0100] [573] [INFO] Using worker: sync
+[2024-01-08 16:17:03 +0100] [778] [INFO] Booting worker with pid: 778
+[2024-01-08 16:17:04 +0100] [778] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 790, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/home/pi/scanner3d/3DScanner/wsgi.py", line 2, in <module>
+    from app import app, socketio
+  File "/home/pi/scanner3d/3DScanner/app/__init__.py", line 2, in <module>
+    from flask_socketio import SocketIO
+ModuleNotFoundError: No module named 'flask_socketio'
+[2024-01-08 16:17:04 +0100] [778] [INFO] Worker exiting (pid: 778)
+[2024-01-08 16:17:04 +0100] [573] [INFO] Shutting down: Master
+[2024-01-08 16:17:04 +0100] [573] [INFO] Reason: Worker failed to boot.
+[2024-01-08 16:42:15 +0100] [5019] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 16:42:15 +0100] [5019] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (5019)
+[2024-01-08 16:42:15 +0100] [5019] [INFO] Using worker: sync
+[2024-01-08 16:42:15 +0100] [5020] [INFO] Booting worker with pid: 5020
+[2024-01-08 16:42:16 +0100] [5020] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 790, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/home/pi/scanner3d/3DScanner/wsgi.py", line 2, in <module>
+    from app import app, socketio
+  File "/home/pi/scanner3d/3DScanner/app/__init__.py", line 2, in <module>
+    from flask_socketio import SocketIO
+ModuleNotFoundError: No module named 'flask_socketio'
+[2024-01-08 16:42:16 +0100] [5020] [INFO] Worker exiting (pid: 5020)
+[2024-01-08 16:42:16 +0100] [5019] [INFO] Shutting down: Master
+[2024-01-08 16:42:16 +0100] [5019] [INFO] Reason: Worker failed to boot.
+[2024-01-08 16:49:29 +0100] [5104] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 16:49:29 +0100] [5104] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (5104)
+[2024-01-08 16:49:29 +0100] [5104] [INFO] Using worker: sync
+[2024-01-08 16:49:29 +0100] [5105] [INFO] Booting worker with pid: 5105
+[2024-01-08 16:49:29 +0100] [5105] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 790, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/home/pi/scanner3d/3DScanner/wsgi.py", line 2, in <module>
+    from app import app, socketio
+  File "/home/pi/scanner3d/3DScanner/app/__init__.py", line 2, in <module>
+    from flask_socketio import SocketIO
+ModuleNotFoundError: No module named 'flask_socketio'
+[2024-01-08 16:49:29 +0100] [5105] [INFO] Worker exiting (pid: 5105)
+[2024-01-08 16:49:29 +0100] [5104] [INFO] Shutting down: Master
+[2024-01-08 16:49:29 +0100] [5104] [INFO] Reason: Worker failed to boot.
+[2024-01-08 16:52:20 +0100] [5393] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 16:52:20 +0100] [5393] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (5393)
+[2024-01-08 16:52:20 +0100] [5393] [INFO] Using worker: sync
+[2024-01-08 16:52:20 +0100] [5394] [INFO] Booting worker with pid: 5394
+[2024-01-08 16:52:20 +0100] [5394] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 984, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'chdir'
+[2024-01-08 16:52:20 +0100] [5394] [INFO] Worker exiting (pid: 5394)
+[2024-01-08 16:52:20 +0100] [5393] [INFO] Shutting down: Master
+[2024-01-08 16:52:20 +0100] [5393] [INFO] Reason: Worker failed to boot.
+[2024-01-08 16:52:47 +0100] [5448] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 16:52:47 +0100] [5448] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (5448)
+[2024-01-08 16:52:47 +0100] [5448] [INFO] Using worker: sync
+[2024-01-08 16:52:47 +0100] [5452] [INFO] Booting worker with pid: 5452
+[2024-01-08 16:52:48 +0100] [5452] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 790, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/home/pi/scanner3d/3DScanner/wsgi.py", line 2, in <module>
+    from app import app, socketio
+  File "/home/pi/scanner3d/3DScanner/app/__init__.py", line 2, in <module>
+    from flask_socketio import SocketIO
+ModuleNotFoundError: No module named 'flask_socketio'
+[2024-01-08 16:52:48 +0100] [5452] [INFO] Worker exiting (pid: 5452)
+[2024-01-08 16:52:48 +0100] [5448] [INFO] Shutting down: Master
+[2024-01-08 16:52:48 +0100] [5448] [INFO] Reason: Worker failed to boot.
+[2024-01-08 16:56:01 +0100] [5528] [INFO] Starting gunicorn 20.1.0
+[2024-01-08 16:56:01 +0100] [5528] [INFO] Listening at: unix:/home/pi/scanner3d/3DScanner/app.sock (5528)
+[2024-01-08 16:56:01 +0100] [5528] [INFO] Using worker: sync
+[2024-01-08 16:56:01 +0100] [5529] [INFO] Booting worker with pid: 5529
+[2024-01-08 16:56:01 +0100] [5529] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/usr/lib/python3/dist-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/usr/lib/python3/dist-packages/gunicorn/util.py", line 384, in import_app
+    mod = importlib.import_module(module)
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 790, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/home/pi/scanner3d/3DScanner/wsgi.py", line 2, in <module>
+    from app import app, socketio
+  File "/home/pi/scanner3d/3DScanner/app/__init__.py", line 2, in <module>
+    from flask_socketio import SocketIO
+ModuleNotFoundError: No module named 'flask_socketio'
+[2024-01-08 16:56:01 +0100] [5529] [INFO] Worker exiting (pid: 5529)
+[2024-01-08 16:56:02 +0100] [5528] [INFO] Shutting down: Master
+[2024-01-08 16:56:02 +0100] [5528] [INFO] Reason: Worker failed to boot.

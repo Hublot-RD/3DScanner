@@ -29,7 +29,7 @@ INITIAL_STATUS = {'state': 'ready',
 CAMERA_RESOLUTION_HIGHRES = (4608, 2592)
 CAMERA_RESOLUTION_PREVIEW = (576, 324)
 
-PREVIEW_IMAGE_PATH = '/home/pi/scanner3d/3DScanner/app/static/cam_imgs/'
-HIGHRES_IMAGE_PATH = '/home/pi/scanner3d/3DScanner/app/static/cam_imgs/highres/'
-CAPTURE_PARAMETERS_PATH = '/home/pi/scanner3d/3DScanner/app/backend/capture_parameter_sets/'
+PREVIEW_IMAGE_PATH = '/home/pi/3DScanner/app/static/cam_imgs/'
+HIGHRES_IMAGE_PATH = '/home/pi/3DScanner/app/static/cam_imgs/highres/'
+CAPTURE_PARAMETERS_PATH = '/home/pi/3DScanner/app/backend/capture_parameter_sets/'
 DEFAULT_CAPTURE_PARAMETERS_PATH = CAPTURE_PARAMETERS_PATH + 'default.json'

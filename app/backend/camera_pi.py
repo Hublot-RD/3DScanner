@@ -1,7 +1,7 @@
 from picamera2 import Picamera2
 from libcamera import controls
 from exiftool import ExifToolHelper
-from time import sleep, perf_counter
+from time import sleep
 from os import remove, mkdir
 from os.path import isdir
 from glob import glob
@@ -59,7 +59,10 @@ class Camera():
         self._set_preview_mode(False)
         name = self._object_name + '_{0:03}.jpg'.format(self.highres_img_cnt)
         self.highres_img_cnt += 1
-        path = HIGHRES_IMAGE_PATH + self._object_name + '/' 
+        path = HIGHRES_IMAGE_PATH + self._object_name + '/'
+        # Make sure image path exists
+        if not isdir(HIGHRES_IMAGE_PATH):
+            mkdir(HIGHRES_IMAGE_PATH)
         if not isdir(path):
             mkdir(path)
         
@@ -91,7 +94,11 @@ class Camera():
         '''
         Captures a low resolution image.
         '''
-        # delete previous preview image
+        # Make sure image path exists
+        if not isdir(PREVIEW_IMAGE_PATH):
+            mkdir(PREVIEW_IMAGE_PATH)
+
+        # Delete previous preview image
         if self._previous_preview_path is not None:
             remove(self._previous_preview_path)
         self._set_preview_mode(True)

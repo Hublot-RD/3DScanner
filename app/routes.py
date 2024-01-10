@@ -18,10 +18,11 @@ def status_updator_thd_target() -> None:
     '''
     Continuously updates the status of the capture process.
     '''
-    if not status_queue.empty():
-        status = status_queue.get()
-        socketio.emit('update_progress', status)
-    time.sleep(0.1)
+    while True:
+        if not status_queue.empty():
+            status = status_queue.get()
+            socketio.emit('update_progress', status)
+        time.sleep(0.1)
     
     # Closing thread properly
     print('status_updator_thd stopped')

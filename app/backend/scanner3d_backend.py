@@ -197,17 +197,6 @@ class Scanner3D_backend():
                 while self._mot_turntable.is_busy:
                     sleep(0.1)
                 sleep(self._p.pause_time)
-        
-        # Capture last image
-        if not self._main_thd_stop.is_set():
-            self._update_status(info={'text_value' : f'Capture de l\'image {self._cam.highres_img_cnt}/{self._total_pics}'})
-            if self._p.flash_enabled:
-                self._led_flash.set_state(True)
-            self._cam.capture_highres()
-            if self._p.flash_enabled:
-                self._led_flash.set_state(False)
-            sleep(self._p.pause_time)
-
         return
     
     def _capture_whole_object(self) -> None:

@@ -380,3 +380,151 @@ ModuleNotFoundError: No module named 'flask_socketio'
 [2024-01-08 16:56:01 +0100] [5529] [INFO] Worker exiting (pid: 5529)
 [2024-01-08 16:56:02 +0100] [5528] [INFO] Shutting down: Master
 [2024-01-08 16:56:02 +0100] [5528] [INFO] Reason: Worker failed to boot.
+[2024-01-09 15:29:24 +0100] [14739] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 15:29:24 +0100] [14739] [INFO] Listening at: unix:/home/pi/3DScanner/app.sock (14739)
+[2024-01-09 15:29:24 +0100] [14739] [INFO] Using worker: sync
+[2024-01-09 15:29:24 +0100] [14746] [INFO] Booting worker with pid: 14746
+[2024-01-09 15:31:36 +0100] [14739] [INFO] Handling signal: int
+[2024-01-09 15:31:36 +0100] [14746] [INFO] Worker exiting (pid: 14746)
+[2024-01-09 15:31:36 +0100] [14739] [INFO] Shutting down: Master
+[2024-01-09 15:49:52 +0100] [17630] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 15:49:52 +0100] [17630] [INFO] Listening at: unix:/home/pi/3DScanner/app.sock (17630)
+[2024-01-09 15:49:52 +0100] [17630] [INFO] Using worker: sync
+[2024-01-09 15:49:52 +0100] [17632] [INFO] Booting worker with pid: 17632
+[2024-01-09 16:11:49 +0100] [17630] [INFO] Handling signal: term
+[2024-01-09 16:11:49 +0100] [17632] [INFO] Worker exiting (pid: 17632)
+[2024-01-09 16:11:49 +0100] [17630] [INFO] Shutting down: Master
+[2024-01-09 16:11:57 +0100] [536] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:11:57 +0100] [536] [INFO] Listening at: unix:/home/pi/3DScanner/app.sock (536)
+[2024-01-09 16:11:57 +0100] [536] [INFO] Using worker: sync
+[2024-01-09 16:11:57 +0100] [615] [INFO] Booting worker with pid: 615
+[2024-01-09 16:19:29 +0100] [536] [INFO] Handling signal: term
+[2024-01-09 16:19:29 +0100] [615] [INFO] Worker exiting (pid: 615)
+[2024-01-09 16:19:29 +0100] [536] [INFO] Shutting down: Master
+[2024-01-09 16:19:30 +0100] [2346] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:19:30 +0100] [2346] [INFO] Listening at: unix:/home/pi/3DScanner/app.sock (2346)
+[2024-01-09 16:19:30 +0100] [2346] [INFO] Using worker: sync
+[2024-01-09 16:19:30 +0100] [2350] [INFO] Booting worker with pid: 2350
+[2024-01-09 16:20:48 +0100] [2346] [INFO] Handling signal: term
+[2024-01-09 16:20:48 +0100] [2350] [INFO] Worker exiting (pid: 2350)
+[2024-01-09 16:20:48 +0100] [2346] [INFO] Shutting down: Master
+[2024-01-09 16:20:49 +0100] [2610] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:20:49 +0100] [2610] [INFO] Listening at: unix:0.0.0.0:5000 (2610)
+[2024-01-09 16:20:49 +0100] [2610] [INFO] Using worker: sync
+[2024-01-09 16:20:49 +0100] [2613] [INFO] Booting worker with pid: 2613
+[2024-01-09 16:25:19 +0100] [2613] [INFO] Worker exiting (pid: 2613)
+[2024-01-09 16:25:19 +0100] [2610] [INFO] Handling signal: term
+[2024-01-09 16:25:19 +0100] [2610] [INFO] Shutting down: Master
+[2024-01-09 16:25:20 +0100] [2950] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:25:20 +0100] [2950] [INFO] Listening at: unix:0.0.0.0:8000 (2950)
+[2024-01-09 16:25:20 +0100] [2950] [INFO] Using worker: sync
+[2024-01-09 16:25:20 +0100] [2953] [INFO] Booting worker with pid: 2953
+[2024-01-09 16:27:49 +0100] [3265] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:27:49 +0100] [3265] [INFO] Listening at: http://0.0.0.0:5000 (3265)
+[2024-01-09 16:27:49 +0100] [3265] [INFO] Using worker: sync
+[2024-01-09 16:27:49 +0100] [3266] [INFO] Booting worker with pid: 3266
+[2024-01-09 16:27:56 +0100] [3265] [INFO] Handling signal: int
+[2024-01-09 16:27:57 +0100] [3266] [INFO] Worker exiting (pid: 3266)
+[2024-01-09 16:28:00 +0100] [3265] [INFO] Shutting down: Master
+[2024-01-09 16:28:09 +0100] [2953] [INFO] Worker exiting (pid: 2953)
+[2024-01-09 16:28:09 +0100] [2950] [INFO] Handling signal: term
+[2024-01-09 16:28:09 +0100] [2950] [ERROR] Worker (pid:2953) was sent SIGTERM!
+[2024-01-09 16:28:09 +0100] [2950] [INFO] Shutting down: Master
+[2024-01-09 16:28:10 +0100] [3392] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:28:10 +0100] [3392] [INFO] Listening at: unix:0.0.0.0:8000 (3392)
+[2024-01-09 16:28:10 +0100] [3392] [INFO] Using worker: sync
+[2024-01-09 16:28:10 +0100] [3395] [INFO] Booting worker with pid: 3395
+[2024-01-09 16:28:32 +0100] [3392] [INFO] Handling signal: term
+[2024-01-09 16:28:32 +0100] [3395] [INFO] Worker exiting (pid: 3395)
+[2024-01-09 16:28:32 +0100] [3392] [INFO] Shutting down: Master
+[2024-01-09 16:28:33 +0100] [3512] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:28:33 +0100] [3512] [INFO] Listening at: http://0.0.0.0:8000 (3512)
+[2024-01-09 16:28:33 +0100] [3512] [INFO] Using worker: sync
+[2024-01-09 16:28:33 +0100] [3515] [INFO] Booting worker with pid: 3515
+[2024-01-09 16:29:15 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3515)
+[2024-01-09 16:29:15 +0100] [3515] [INFO] Worker exiting (pid: 3515)
+[2024-01-09 16:29:16 +0100] [3512] [ERROR] Worker (pid:3515) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:29:16 +0100] [3549] [INFO] Booting worker with pid: 3549
+[2024-01-09 16:29:56 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3549)
+[2024-01-09 16:29:56 +0100] [3549] [INFO] Worker exiting (pid: 3549)
+[2024-01-09 16:29:57 +0100] [3512] [ERROR] Worker (pid:3549) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:29:57 +0100] [3559] [INFO] Booting worker with pid: 3559
+[2024-01-09 16:30:38 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3559)
+[2024-01-09 16:30:38 +0100] [3559] [INFO] Worker exiting (pid: 3559)
+[2024-01-09 16:30:39 +0100] [3512] [ERROR] Worker (pid:3559) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:30:39 +0100] [3576] [INFO] Booting worker with pid: 3576
+[2024-01-09 16:31:18 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3576)
+[2024-01-09 16:31:18 +0100] [3576] [INFO] Worker exiting (pid: 3576)
+[2024-01-09 16:31:19 +0100] [3512] [ERROR] Worker (pid:3576) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:31:19 +0100] [3661] [INFO] Booting worker with pid: 3661
+[2024-01-09 16:31:58 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3661)
+[2024-01-09 16:31:58 +0100] [3661] [INFO] Worker exiting (pid: 3661)
+[2024-01-09 16:32:00 +0100] [3512] [ERROR] Worker (pid:3661) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:32:00 +0100] [3724] [INFO] Booting worker with pid: 3724
+[2024-01-09 16:32:40 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3724)
+[2024-01-09 16:32:40 +0100] [3724] [INFO] Worker exiting (pid: 3724)
+[2024-01-09 16:32:41 +0100] [3512] [ERROR] Worker (pid:3724) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:32:41 +0100] [3737] [INFO] Booting worker with pid: 3737
+[2024-01-09 16:33:20 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3737)
+[2024-01-09 16:33:20 +0100] [3737] [INFO] Worker exiting (pid: 3737)
+[2024-01-09 16:33:21 +0100] [3512] [ERROR] Worker (pid:3737) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:33:21 +0100] [3745] [INFO] Booting worker with pid: 3745
+[2024-01-09 16:34:01 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3745)
+[2024-01-09 16:34:01 +0100] [3745] [INFO] Worker exiting (pid: 3745)
+[2024-01-09 16:34:02 +0100] [3512] [ERROR] Worker (pid:3745) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:34:02 +0100] [3755] [INFO] Booting worker with pid: 3755
+[2024-01-09 16:34:42 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3755)
+[2024-01-09 16:34:42 +0100] [3755] [INFO] Worker exiting (pid: 3755)
+[2024-01-09 16:34:43 +0100] [3512] [ERROR] Worker (pid:3755) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:34:43 +0100] [3764] [INFO] Booting worker with pid: 3764
+[2024-01-09 16:35:23 +0100] [3512] [CRITICAL] WORKER TIMEOUT (pid:3764)
+[2024-01-09 16:35:23 +0100] [3764] [INFO] Worker exiting (pid: 3764)
+[2024-01-09 16:35:24 +0100] [3512] [ERROR] Worker (pid:3764) was sent SIGKILL! Perhaps out of memory?
+[2024-01-09 16:35:24 +0100] [3868] [INFO] Booting worker with pid: 3868
+[2024-01-09 16:35:54 +0100] [3512] [INFO] Handling signal: term
+[2024-01-09 16:36:16 +0100] [3868] [INFO] Worker exiting (pid: 3868)
+[2024-01-09 16:36:16 +0100] [3512] [INFO] Shutting down: Master
+[2024-01-09 16:36:16 +0100] [4043] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:36:16 +0100] [4043] [INFO] Listening at: unix:/home/pi/3DScanner/app.sock (4043)
+[2024-01-09 16:36:16 +0100] [4043] [INFO] Using worker: sync
+[2024-01-09 16:36:16 +0100] [4046] [INFO] Booting worker with pid: 4046
+[2024-01-09 16:43:00 +0100] [4043] [CRITICAL] WORKER TIMEOUT (pid:4046)
+[2024-01-09 16:43:00 +0100] [4046] [INFO] Worker exiting (pid: 4046)
+[2024-01-09 16:43:00 +0100] [4043] [ERROR] Worker (pid:4046) exited with code 1
+[2024-01-09 16:43:00 +0100] [4043] [ERROR] Worker (pid:4046) exited with code 1.
+[2024-01-09 16:43:00 +0100] [4951] [INFO] Booting worker with pid: 4951
+[2024-01-09 16:43:14 +0100] [4043] [INFO] Handling signal: term
+[2024-01-09 16:43:33 +0100] [4951] [INFO] Worker exiting (pid: 4951)
+[2024-01-09 16:43:33 +0100] [4043] [INFO] Shutting down: Master
+[2024-01-09 16:43:40 +0100] [504] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:43:40 +0100] [504] [INFO] Listening at: unix:/home/pi/3DScanner/app.sock (504)
+[2024-01-09 16:43:40 +0100] [504] [INFO] Using worker: sync
+[2024-01-09 16:43:40 +0100] [613] [INFO] Booting worker with pid: 613
+                                                                                                                                                                                                                                                                                                                                                                              [2024-01-09 16:44:24 +0100] [491] [INFO] Starting gunicorn 21.2.0
+[2024-01-09 16:44:24 +0100] [491] [INFO] Listening at: unix:/home/pi/3DScanner/app.sock (491)
+[2024-01-09 16:44:24 +0100] [491] [INFO] Using worker: sync
+[2024-01-09 16:44:24 +0100] [663] [INFO] Booting worker with pid: 663
+[2024-01-10 08:39:30 +0100] [491] [CRITICAL] WORKER TIMEOUT (pid:663)
+[2024-01-10 08:39:30 +0100] [663] [INFO] Worker exiting (pid: 663)
+[2024-01-10 08:39:31 +0100] [491] [ERROR] Worker (pid:663) was sent SIGKILL! Perhaps out of memory?
+[2024-01-10 08:39:31 +0100] [1356] [INFO] Booting worker with pid: 1356
+[2024-01-10 08:41:01 +0100] [491] [CRITICAL] WORKER TIMEOUT (pid:1356)
+[2024-01-10 08:41:01 +0100] [1356] [INFO] Worker exiting (pid: 1356)
+[2024-01-10 08:41:01 +0100] [491] [ERROR] Worker (pid:1356) exited with code 1
+[2024-01-10 08:41:01 +0100] [491] [ERROR] Worker (pid:1356) exited with code 1.
+[2024-01-10 08:41:01 +0100] [1792] [INFO] Booting worker with pid: 1792
+[2024-01-10 08:49:14 +0100] [491] [INFO] Handling signal: term
+[2024-01-10 08:49:30 +0100] [1792] [INFO] Worker exiting (pid: 1792)
+[2024-01-10 08:49:30 +0100] [491] [INFO] Shutting down: Master
+[2024-01-10 09:59:50 +0100] [7253] [INFO] Starting gunicorn 21.2.0
+[2024-01-10 09:59:50 +0100] [7253] [INFO] Listening at: unix:/home/pi/3DScanner/app.sock (7253)
+[2024-01-10 09:59:50 +0100] [7253] [INFO] Using worker: sync
+[2024-01-10 09:59:50 +0100] [7260] [INFO] Booting worker with pid: 7260
+[2024-01-10 10:00:57 +0100] [7253] [CRITICAL] WORKER TIMEOUT (pid:7260)
+[2024-01-10 10:00:57 +0100] [7260] [INFO] Worker exiting (pid: 7260)
+[2024-01-10 10:00:57 +0100] [7253] [ERROR] Worker (pid:7260) exited with code 1
+[2024-01-10 10:00:57 +0100] [7253] [ERROR] Worker (pid:7260) exited with code 1.
+[2024-01-10 10:00:57 +0100] [7324] [INFO] Booting worker with pid: 7324
+[2024-01-10 10:01:24 +0100] [7253] [INFO] Handling signal: term
+[2024-01-10 10:01:30 +0100] [7324] [INFO] Worker exiting (pid: 7324)
+[2024-01-10 10:01:31 +0100] [7253] [INFO] Shutting down: Master

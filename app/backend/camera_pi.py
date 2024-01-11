@@ -135,6 +135,16 @@ class Camera():
             # Merge the image to get a better idea of the object boundary
             merged = cv2.addWeighted(merged, (img_id-1)/img_id, new_img, 1/img_id, 0)
         cv2.imwrite(out_path, merged)
+    
+    def save_merged_to_usb(self) -> None:
+        '''
+        Copy the merged image to the USB storage.
+        '''
+        if self._usb_storage is not None:
+            dest_folder = self._usb_storage.loc + self._object_name + '/'
+            if not isdir(dest_folder):
+                mkdir(dest_folder)
+            self._usb_storage.copy_file_to(file_path=HIGHRES_IMAGE_PATH + self._object_name + '/' + self._object_name + '_merged.jpg', dest_folder=dest_folder)
 
     
     def _set_preview_mode(self, preview_ON: bool) -> None:

@@ -215,6 +215,11 @@ class Scanner3D_backend():
                 self._mot_camera.rotate(distance=height_step)
                 sleep(self._p.pause_time)
         
+        # Save merged image to usb storage
+        if self._usb_storage is not None:
+            self._update_status(info={'text_value' : 'Sauvegarde des images'})
+            self._cam.save_merged_to_usb()
+        
 
 
 

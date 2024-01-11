@@ -74,8 +74,8 @@ def forecast_time(params: CaptureParameters):
     Forecast the total time in seconds the capture will take with given capture parameters.
     '''
     total_time = 0
-    one_picture_time = params.camera_exposure/1000*4 # 4 has to be tuned
-    save_usb_time = 0.1 # second (has to be tuned)
+    one_picture_time = params.camera_exposure/1000*366 # 366 is tuned experimentally
+    save_usb_time = 0.1 # second
     time_startup = 1
     time_closing = 1
     time_homing = 5

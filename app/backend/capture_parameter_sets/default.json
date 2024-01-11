@@ -1,5 +1,5 @@
 {
-    "PAUSE_TIME" : 1.0,
+    "PAUSE_TIME" : 0.5,
     "MOTOR_CAMERA_SPEED" : 10.0, 
     "MOTOR_CAMERA_STEP" : 20.0, 
     "MOTOR_TURNTABLE_SPEED" : 45.0, 

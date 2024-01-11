@@ -228,6 +228,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show OK button
             okButton.style.display = 'inline';
         }
+        else if (data.state == 'ready') {
+            // Show progress bar, indicator
+            progressBar.style.display = 'inline';
+            progressBarIndicator.style.display = 'inline';
+            // Hide stop and OK button
+            stopButton.style.display = 'none';
+            okButton.style.display = 'none';
+        }
         else {
             // Show progress bar, indicator, stop button
             progressBar.style.display = 'inline';

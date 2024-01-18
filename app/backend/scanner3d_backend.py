@@ -8,7 +8,7 @@ from app.backend.camera_pi import Camera
 from app.backend.led_ctrl import LED_Controller, play_startup_sequence
 from app.backend.stepper_motor import StepperMotor, CameraAxis
 from app.backend.usb_interface import USBStorage, get_usb_drives_list
-from app.backend.utils import forecast_time, CaptureParameters, s2time
+from app.backend.utils import forecast_time, CaptureParameters, s2time, remove_old_captures
 
 
 class Scanner3D_backend():
@@ -41,6 +41,9 @@ class Scanner3D_backend():
         self._led_flash = LED_Controller(cst.FLASH_PIN)
         self._led_capture = LED_Controller(cst.LEDS_PINOUT['CAPTURE'], reversed=True)
         self._led_error = LED_Controller(cst.LEDS_PINOUT['ERROR'], reversed=True)
+
+        # Remove captures older than 30 days
+        remove_old_captures()
 
         # Play LED animation
         play_startup_sequence(capture_pin=self._led_capture.pin, error_pin=self._led_error.pin, flash_pin=self._led_flash.pin)

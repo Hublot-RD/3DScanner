@@ -1,10 +1,12 @@
 try:
-    from app.backend.constants import CAPTURE_PARAMETERS_PATH, DEFAULT_CAPTURE_PARAMETERS_PATH
+    from app.backend.constants import CAPTURE_PARAMETERS_PATH, DEFAULT_CAPTURE_PARAMETERS_PATH, HIGHRES_IMAGE_PATH
 except ImportError:
-    from constants import CAPTURE_PARAMETERS_PATH, DEFAULT_CAPTURE_PARAMETERS_PATH
+    from constants import CAPTURE_PARAMETERS_PATH, DEFAULT_CAPTURE_PARAMETERS_PATH, HIGHRES_IMAGE_PATH
 from warnings import warn
 import json
-from math import ceil, floor
+import os
+import shutil
+from datetime import datetime, timedelta
 
 class CaptureParameters():
     def __init__(self, params: dict = None) -> None:
@@ -66,9 +68,6 @@ class CaptureParameters():
         self.set_from_dict(p)
 
 
-
-
-
 def forecast_time(params: CaptureParameters):
     '''
     Forecast the total time in seconds the capture will take with given capture parameters.
@@ -97,6 +96,22 @@ def s2time(seconds: float) -> str:
         s = '0' + s
     return  m + 'm ' + s + 's'
 
+def remove_old_captures(threshold_days=30):
+    # Calculate the threshold date
+    threshold_date = datetime.now() - timedelta(days=threshold_days)
+
+    # Iterate over all items in the folder
+    for item in os.listdir(HIGHRES_IMAGE_PATH):
+        item_path = os.path.join(HIGHRES_IMAGE_PATH, item)
+
+        # Check if the item is a directory and older than the threshold date
+        if os.path.isdir(item_path) and datetime.fromtimestamp(os.path.getctime(item_path)) < threshold_date:
+            try:
+                # Remove the folder
+                shutil.rmtree(item_path)
+            except Exception as e:
+                print(f"Error removing {item_path}: {e}")
+
 
 
 if __name__ == '__main__':
@@ -107,3 +122,7 @@ if __name__ == '__main__':
     p.set_from_file('test')
     print(p)
     print('Capture estimated time [s]:', forecast_time(p))
+
+    print("Removing old captures...")
+    remove_old_captures(30)
+    print("Done.")
